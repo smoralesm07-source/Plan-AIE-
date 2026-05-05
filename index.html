@@ -855,7 +855,7 @@ async function loadFromSheets(){
       estado:t.estado||'Planificada',avance:parseInt(t.avance)||0,
       obs:t.observaciones||'',motivo:t.motivo||'',
       fechaCambioEstado:t.fechacambioestado||'',
-      estadoManual:t.estadomanual==='1'||false
+      estadoManual:t.estadomanual==='SI'
     }));
     // Aplicar reglas de estado automático al cargar
     tasks.forEach(t=>autoStatus(t));
@@ -901,7 +901,7 @@ async function saveTaskToSheets(task){
       responsable:task.responsable,inicio:task.inicio,termino:task.termino,
       estado:task.estado,avance:task.avance,observaciones:task.obs||'',motivo:task.motivo||'',
       fechacambioestado:task.fechaCambioEstado||'',
-      estadomanual:task.estadoManual?'1':''
+      estadomanual:task.estadoManual?'SI':''
     };
     // Usar 'upsert': el script inserta si no existe, actualiza si existe
     const res=await sheetsFetch({action:'upsert'},{task:payload});
@@ -916,7 +916,7 @@ async function saveTaskToSheets(task){
 async function writeAllToSheets(){
   setSyncState('busy','Guardando plan completo...');
   try{
-    const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs||'',motivo:t.motivo||'',fechacambioestado:t.fechaCambioEstado||'',estadomanual:t.estadoManual?'1':''}));
+    const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs||'',motivo:t.motivo||'',fechacambioestado:t.fechaCambioEstado||'',estadomanual:t.estadoManual?'SI':''}));
     const res=await sheetsFetch({action:'write'},{tasks:payload});
     if(res&&res.error) throw new Error(res.error);
     setSyncState('ok','Guardado');setTs();toast('Plan sincronizado en Sheets','ok');
@@ -1007,8 +1007,15 @@ function launchApp(){
 }
 
 async function forceSync(){
+  // Flush all pending debounced saves before reloading
+  const pending=Object.keys(debTimers).filter(k=>debTimers[k]);
+  if(pending.length>0){
+    pending.forEach(k=>clearTimeout(debTimers[k]));
+    const toSave=tasks.filter(t=>pending.includes(String(t.id)));
+    for(const t of toSave){ await saveTaskToSheets(t); }
+  }
   await loadFromSheets();
-  rebuildUI();render();
+  rebuildUI();render();renderDash();
   if(admTab==='t')renderAdmT();
   if(admTab==='u')renderAdmU();
 }
@@ -1256,7 +1263,10 @@ function quickStatus(id,sel){
   // Actualizar input de avance en la misma fila
   const row=sel.closest('tr');
   if(row){const ai=row.querySelector('.avinp');if(ai)ai.value=t.avance;}
-  debounceSave(t);updateMetrics(tasks);toast('Estado actualizado');
+  // Guardar inmediatamente (sin debounce) para que estadoManual llegue a Sheets
+  clearTimeout(debTimers[t.id]);
+  saveTaskToSheets(t);
+  updateMetrics(tasks);toast('Estado actualizado');
 }
 function quickAvance(id,inp){
   const t=tasks.find(x=>x.id==id);if(!t)return;
