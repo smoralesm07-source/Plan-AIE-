@@ -246,6 +246,13 @@ tbody td{padding:9px 14px;vertical-align:middle}
 .tico.ok{background:var(--ac)}
 .tico.err{background:rgba(255,255,255,.25)}
 
+/* ── SORT HEADERS ── */
+.th-sort{cursor:pointer;user-select:none;white-space:nowrap;transition:color .13s}
+.th-sort:hover{color:var(--tx2)}
+.th-sort.asc::after{content:' ↑';opacity:.7}
+.th-sort.desc::after{content:' ↓';opacity:.7}
+.th-sort.asc,.th-sort.desc{color:var(--ac)}
+
 /* ── DASHBOARD ── */
 .dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px}
 .dash-grid-wide{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:22px}
@@ -477,7 +484,18 @@ tbody td{padding:9px 14px;vertical-align:middle}
     <div class="tcard">
       <div class="twrap">
         <table>
-          <thead><tr><th class="tid">#</th><th>Línea</th><th>Actividad</th><th>Responsable</th><th>Inicio</th><th>Término</th><th>Estado</th><th>Avance</th><th>Observaciones</th><th></th></tr></thead>
+          <thead><tr>
+              <th class="tid th-sort" onclick="setSort('id')" id="th-id">#</th>
+              <th class="th-sort" onclick="setSort('linea')" id="th-linea">Línea</th>
+              <th>Actividad</th>
+              <th class="th-sort" onclick="setSort('responsable')" id="th-responsable">Responsable</th>
+              <th class="th-sort" onclick="setSort('inicio')" id="th-inicio">Inicio</th>
+              <th class="th-sort" onclick="setSort('termino')" id="th-termino">Término</th>
+              <th class="th-sort" onclick="setSort('estado')" id="th-estado">Estado</th>
+              <th class="th-sort" onclick="setSort('avance')" id="th-avance">Avance</th>
+              <th>Observaciones</th>
+              <th></th>
+            </tr></thead>
           <tbody id="tbody"></tbody>
         </table>
         <div class="empty" id="empty" style="display:none">
@@ -790,6 +808,7 @@ function updateAuthBanner(){
 let SCRIPT_URL='';
 let tasks=[],users=[],nextId=109;
 let CF={linea:'',resp:'',estado:'',sub:'',q:''};
+let SORT={col:'id',dir:'asc'}; // columna y dirección de ordenamiento
 let admTab='t';
 let editPId=null,editTId=null,editUId=null,confirmCB=null;
 const debTimers={};
@@ -834,7 +853,9 @@ async function loadFromSheets(){
       linea:t.linea||'',sub:t.sub||'',actividad:t.actividad||'',
       responsable:t.responsable||'',inicio:t.inicio||'',termino:t.termino||'',
       estado:t.estado||'Planificada',avance:parseInt(t.avance)||0,
-      obs:t.observaciones||'',motivo:t.motivo||''
+      obs:t.observaciones||'',motivo:t.motivo||'',
+      fechaCambioEstado:t.fechacambioestado||'',
+      estadoManual:t.estadomanual==='1'||false
     }));
     // Aplicar reglas de estado automático al cargar
     tasks.forEach(t=>autoStatus(t));
@@ -878,7 +899,9 @@ async function saveTaskToSheets(task){
     const payload={
       id:task.id,linea:task.linea,sub:task.sub,actividad:task.actividad,
       responsable:task.responsable,inicio:task.inicio,termino:task.termino,
-      estado:task.estado,avance:task.avance,observaciones:task.obs||'',motivo:task.motivo||''
+      estado:task.estado,avance:task.avance,observaciones:task.obs||'',motivo:task.motivo||'',
+      fechacambioestado:task.fechaCambioEstado||'',
+      estadomanual:task.estadoManual?'1':''
     };
     // Usar 'upsert': el script inserta si no existe, actualiza si existe
     const res=await sheetsFetch({action:'upsert'},{task:payload});
@@ -893,7 +916,7 @@ async function saveTaskToSheets(task){
 async function writeAllToSheets(){
   setSyncState('busy','Guardando plan completo...');
   try{
-    const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs||'',motivo:t.motivo||''}));
+    const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs||'',motivo:t.motivo||'',fechacambioestado:t.fechaCambioEstado||'',estadomanual:t.estadoManual?'1':''}));
     const res=await sheetsFetch({action:'write'},{tasks:payload});
     if(res&&res.error) throw new Error(res.error);
     setSyncState('ok','Guardado');setTs();toast('Plan sincronizado en Sheets','ok');
@@ -1022,6 +1045,33 @@ function setAdmTab(t,el){
   if(el)el.classList.add('on');
   renderAdm();
 }
+function setSort(col){
+  if(SORT.col===col){
+    SORT.dir=SORT.dir==='asc'?'desc':'asc';
+  } else {
+    SORT.col=col;
+    SORT.dir=col==='avance'||col==='id'?'desc':'asc';
+  }
+  // Update header classes
+  document.querySelectorAll('.th-sort').forEach(th=>th.classList.remove('asc','desc'));
+  const thEl=document.getElementById('th-'+col);
+  if(thEl)thEl.classList.add(SORT.dir);
+  render();
+}
+
+const ESTADO_ORDER={'Atrasada':0,'En curso':1,'Planificada':2,'Pausada':3,'Completada':4};
+
+function sortTasks(arr){
+  const col=SORT.col,dir=SORT.dir==='asc'?1:-1;
+  return [...arr].sort((a,b)=>{
+    let va=a[col],vb=b[col];
+    if(col==='avance'||col==='id'){ va=Number(va)||0; vb=Number(vb)||0; return (va-vb)*dir; }
+    if(col==='estado'){ return (ESTADO_ORDER[va]??9)-(ESTADO_ORDER[vb]??9)*dir; }
+    if(col==='inicio'||col==='termino'){ va=va||'';vb=vb||''; }
+    return String(va).localeCompare(String(vb),'es')*dir;
+  });
+}
+
 function setSub(val,el){
   CF.sub=val;CF.linea='';
   if(val){
@@ -1092,12 +1142,13 @@ function render(){
     if(q&&!t.actividad.toLowerCase().includes(q)&&!t.sub.toLowerCase().includes(q)&&!t.responsable.toLowerCase().includes(q))return false;
     return true;
   });
+  const sorted=sortTasks(vis);
   updateMetrics(vis);
   document.getElementById('rcnt').textContent=vis.length+' '+(vis.length===1?'tarea':'tareas');
   const tb=document.getElementById('tbody'),em=document.getElementById('empty');
-  if(!vis.length){tb.innerHTML='';em.style.display='block';return;}
+  if(!sorted.length){tb.innerHTML='';em.style.display='block';return;}
   em.style.display='none';
-  tb.innerHTML=vis.map(t=>{
+  tb.innerHTML=sorted.map(t=>{
     const rc=uC(t.responsable),ini=t.responsable.split(' ').slice(0,2).map(w=>w[0]).join('');
     const nm=t.responsable.split(' ').slice(0,2).map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join(' ');
     const lm=LM[t.linea]||{s:'—',c:'lb0'},bc=bC(t),sc=SC[t.estado]||'s0';
@@ -1145,6 +1196,9 @@ function render(){
 const TODAY = (() => { const d=new Date(); d.setHours(0,0,0,0); return d; })();
 
 function autoStatus(t) {
+  // Si el usuario cambió el estado manualmente, respetarlo siempre
+  if (t.estadoManual) return false;
+
   // Solo aplica si la tarea NO está completada ni pausada
   if (t.estado === 'Completada' || t.estado === 'Pausada') return false;
 
@@ -1191,6 +1245,8 @@ function autoAvance(t) {
 function quickStatus(id,sel){
   const t=tasks.find(x=>x.id==id);if(!t)return;
   t.estado=sel.value;
+  t.estadoManual=true; // el usuario definió esto: no sobreescribir por fechas
+  t.fechaCambioEstado=new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   // Aplicar avance automático según nuevo estado
   autoAvance(t);
   sel.className='sp '+(SC[t.estado]||'s0');
@@ -1230,10 +1286,16 @@ function openProgressMo(id){
 }
 function saveProgress(){
   const t=tasks.find(x=>x.id==editPId);if(!t)return;
+  const estadoAnterior=t.estado;
   t.estado=document.getElementById('mp-est').value;
   t.avance=parseInt(document.getElementById('mp-av').value)||0;
   t.obs=document.getElementById('mp-obs').value;
   t.motivo=document.getElementById('mp-mot').value;
+  // Si cambió el estado, marcar como manual y registrar fecha
+  if(t.estado!==estadoAnterior){
+    t.estadoManual=true;
+    t.fechaCambioEstado=new Date().toISOString().split('T')[0];
+  }
   // Aplicar avance automático si corresponde
   autoAvance(t);
   closeMo('mo-p');saveTaskToSheets(t);render();toast('Tarea actualizada');
