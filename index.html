@@ -565,10 +565,10 @@ let currentUser = null;       // { name, email, picture, initials }
 // Edita este array para controlar quién puede acceder.
 // Si está vacío, cualquier cuenta Google puede entrar.
 const ALLOWED_EMAILS = [
-  // 'alejandro.cespedes@uaf.cl',
-  // 'cristian.diaz@uaf.cl',
-  // 'kevin.villanueva@uaf.cl',
-  // 'diego.hernandez@uaf.cl',
+  // 'acespedes@uaf.gob.cl',
+  // 'cdiaz@uaf.gob.cl',
+  // 'kvillanueva@uaf.gob.cl',
+  // 'dhernandez@uaf.gob.cl',
 ];
 
 function initGoogleAuth(clientId){
@@ -1301,7 +1301,7 @@ document.getElementById('fsel-resp').addEventListener('change',()=>{CF.resp='';r
   // Pega aquí tu Google Client ID después de registrar la app en
   // Google Cloud Console (APIs & Services → Credentials → OAuth 2.0)
   // Formato: "xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
-  const GOOGLE_CLIENT_ID_CONFIG = '';
+  const GOOGLE_CLIENT_ID_CONFIG = '945821204702-t0s8nf6u1m5j09u11iutanuebpica0s6.apps.googleusercontent.com';
   // ───────────────────────────────────────────────────────────────
 
   // Check cached user session
