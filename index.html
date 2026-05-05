@@ -775,11 +775,14 @@ async function seedSheets(){
 async function saveTaskToSheets(task){
   setSyncState('busy','Guardando...');
   try{
-    await sheetsFetch({action:'update'},{task:{
+    const payload={
       id:task.id,linea:task.linea,sub:task.sub,actividad:task.actividad,
       responsable:task.responsable,inicio:task.inicio,termino:task.termino,
       estado:task.estado,avance:task.avance,observaciones:task.obs||'',motivo:task.motivo||''
-    }});
+    };
+    // Usar 'upsert': el script inserta si no existe, actualiza si existe
+    const res=await sheetsFetch({action:'upsert'},{task:payload});
+    if(res&&res.error) throw new Error(res.error);
     setSyncState('ok','Guardado');setTs();
   }catch(e){
     setSyncState('err','Error al guardar');
@@ -791,13 +794,17 @@ async function writeAllToSheets(){
   setSyncState('busy','Guardando plan completo...');
   try{
     const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs||'',motivo:t.motivo||''}));
-    await sheetsFetch({action:'write'},{tasks:payload});
-    setSyncState('ok','Guardado');setTs();toast('Plan sincronizado','ok');
-  }catch(e){setSyncState('err','Error');toast('Error: '+e.message,'err');}
+    const res=await sheetsFetch({action:'write'},{tasks:payload});
+    if(res&&res.error) throw new Error(res.error);
+    setSyncState('ok','Guardado');setTs();toast('Plan sincronizado en Sheets','ok');
+  }catch(e){setSyncState('err','Error');toast('Error al sincronizar: '+e.message,'err');}
 }
 
 async function deleteFromSheets(id){
-  try{await sheetsFetch({action:'delete'},{id});}catch(e){console.warn('delete error',e);}
+  try{
+    const res=await sheetsFetch({action:'delete'},{id});
+    if(res&&res.error) toast('Error al eliminar en Sheets: '+res.error,'err');
+  }catch(e){console.warn('delete error',e);}
 }
 
 function debounceSave(task){
