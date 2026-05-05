@@ -317,8 +317,6 @@ tbody td{padding:9px 14px;vertical-align:middle}
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Seguimiento
     </div>
-    <div class="sb-sec">Por sub línea</div>
-    <div id="sb-sub"></div>
     <div class="sb-sec">Por línea</div>
     <div class="ni" onclick="setLinea('MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS',this)"><span class="nd" style="background:#378ADD"></span>Monitoreo</div>
     <div class="ni" onclick="setLinea('FORTALECIMIENTO DEL MODELO DE DATOS UAF',this)"><span class="nd" style="background:#1D9E75"></span>Datos UAF</div>
@@ -327,6 +325,8 @@ tbody td{padding:9px 14px;vertical-align:middle}
     <div class="ni" onclick="setLinea('OTRAS TAREAS',this)"><span class="nd" style="background:#6B3880"></span>Otras tareas</div>
     <div class="sb-sec">Por responsable</div>
     <div id="sb-resp"></div>
+    <div class="sb-sec">Por sub línea</div>
+    <div id="sb-sub"></div>
     <div class="sb-sec">Administración</div>
     <div class="ni" id="nav-adm" onclick="goPage('adm',this)">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1285,15 +1285,24 @@ function renderAdmU(){
 function rebuildUI(){
   // sidebar sub
   const allSubs=[...new Set(tasks.map(t=>t.sub).filter(Boolean))].sort();
-  document.getElementById('sb-sub').innerHTML=allSubs.map(s=>`
-    <div class="ni" onclick="setSub('${s.replace(/'/g,"\'")}",this)" title="${s}">
+  const sbSubEl = document.getElementById('sb-sub');
+  sbSubEl.innerHTML = allSubs.map((s,i) => `
+    <div class="ni" data-sub="${i}" title="${s}">
       <span class="nd" style="background:var(--tx3)"></span>
       <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:168px;display:block">${s}</span>
     </div>`).join('');
+  // Attach click handlers safely without inline quote issues
+  sbSubEl.querySelectorAll('.ni[data-sub]').forEach((el,i) => {
+    el.addEventListener('click', function(){ setSub(allSubs[i], this); });
+  });
   // fsel-sub
   const fs=document.getElementById('fsel-sub');
   fs.innerHTML='<option value="">Todas las sub líneas</option>';
-  allSubs.forEach(s=>{fs.innerHTML+=`<option value="${s}">${s}</option>`;});
+  allSubs.forEach(s=>{
+    const opt=document.createElement('option');
+    opt.value=s; opt.textContent=s;
+    fs.appendChild(opt);
+  });
   // sidebar resp
   document.getElementById('sb-resp').innerHTML=users.map((u,i)=>`
     <div class="ni" onclick="setResp('${u.name}',this)">
