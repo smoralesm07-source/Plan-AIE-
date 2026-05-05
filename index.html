@@ -246,6 +246,74 @@ tbody td{padding:9px 14px;vertical-align:middle}
 .tico.ok{background:var(--ac)}
 .tico.err{background:rgba(255,255,255,.25)}
 
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px}
+.dash-grid-wide{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:22px}
+.dash-grid-full{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:22px}
+.dcard{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.dcard-head{padding:16px 20px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:baseline;justify-content:space-between}
+.dcard-title{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)}
+.dcard-badge{font-size:11px;color:var(--tx3);font-family:"DM Mono",monospace}
+.dcard-body{padding:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.kpi.k-blue::after{background:#378ADD}
+.kpi.k-green::after{background:#1D9E75}
+.kpi.k-amber::after{background:#BA7517}
+.kpi.k-red::after{background:var(--red)}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);margin-bottom:8px}
+.kpi-value{font-size:36px;font-weight:600;color:var(--tx);font-family:"DM Mono",monospace;line-height:1}
+.kpi-sub{font-size:12px;color:var(--tx3);margin-top:6px}
+.kpi-trend{font-size:11px;font-weight:600;margin-top:4px}
+.kpi-trend.up{color:#1D9E75}
+.kpi-trend.down{color:var(--red)}
+/* Progress bars */
+.pbar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pbar-row:last-child{margin-bottom:0}
+.pbar-label{font-size:12px;font-weight:500;color:var(--tx);min-width:100px;max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar-track{flex:1;height:8px;background:var(--bd);border-radius:4px;overflow:hidden;position:relative}
+.pbar-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pbar-pct{font-size:12px;font-family:"DM Mono",monospace;color:var(--tx2);min-width:36px;text-align:right}
+.pbar-count{font-size:11px;color:var(--tx3);min-width:52px;text-align:right}
+/* Donut chart */
+.donut-wrap{display:flex;align-items:center;gap:24px}
+.donut-legend{flex:1;display:flex;flex-direction:column;gap:10px}
+.dl-row{display:flex;align-items:center;gap:9px}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dl-name{font-size:12px;color:var(--tx2);flex:1}
+.dl-val{font-size:12px;font-family:"DM Mono",monospace;color:var(--tx);font-weight:500}
+.dl-pct{font-size:11px;color:var(--tx3);min-width:34px;text-align:right}
+/* Responsable cards */
+.resp-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rcard{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:14px 16px}
+.rcard-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.rcard-name{font-size:13px;font-weight:500;flex:1}
+.rcard-count{font-size:11px;color:var(--tx3);font-family:"DM Mono",monospace}
+.rcard-bar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.rcard-bf{height:100%;border-radius:3px;transition:width .5s}
+.rcard-stats{display:flex;gap:10px;flex-wrap:wrap}
+.rstat{font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:4px}
+.rstat-dot{width:7px;height:7px;border-radius:50%}
+/* Alerta crítica */
+.alerta-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.alerta-row:last-child{border-bottom:none}
+.alerta-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.alerta-icon.atrasada{background:var(--rl)}
+.alerta-icon.riesgo{background:#FFF3CD}
+.alerta-body{flex:1;min-width:0}
+.alerta-act{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alerta-meta{font-size:11px;color:var(--tx3);margin-top:2px}
+.alerta-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
+.tag-at{background:var(--rl);color:var(--red)}
+.tag-ri{background:#FFF3CD;color:#856404}
+.timeline-item{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.timeline-item:last-child{border-bottom:none}
+.tl-date{font-family:"DM Mono",monospace;font-size:11px;color:var(--tx3);min-width:44px;padding-top:2px}
+.tl-body{flex:1}
+.tl-act{font-size:12px;font-weight:500;line-height:1.3}
+.tl-resp{font-size:11px;color:var(--tx3);margin-top:1px}
+
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
@@ -313,6 +381,10 @@ tbody td{padding:9px 14px;vertical-align:middle}
   </div>
   <nav class="sb-nav">
     <div class="sb-sec">Principal</div>
+    <div class="ni" id="nav-dash" onclick="goPage('dash',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Resumen gerencial
+    </div>
     <div class="ni active" id="nav-seg" onclick="goSeguimiento(this)">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Seguimiento
@@ -337,6 +409,34 @@ tbody td{padding:9px 14px;vertical-align:middle}
 </aside>
 
 <main class="main">
+
+<!-- PAGE: RESUMEN GERENCIAL -->
+<div class="page" id="page-dash">
+  <div class="topbar">
+    <div class="tb-info">
+      <div class="tb-title">Resumen Gerencial</div>
+      <div class="tb-sub" id="dash-fecha">Plan de Trabajo 2026 · UAF</div>
+    </div>
+    <button class="btn bg2 bsm" onclick="renderDash();toast('Vista actualizada','ok')">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Actualizar
+    </button>
+    <button class="btn bg2 bsm" onclick="printDash()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+      Exportar PDF
+    </button>
+  </div>
+  <div class="content" id="dash-content">
+    <!-- KPIs -->
+    <div class="kpi-grid" id="dash-kpis"></div>
+    <!-- Fila 1: donut + barras por linea -->
+    <div class="dash-grid-wide" id="dash-row1"></div>
+    <!-- Fila 2: por responsable -->
+    <div class="dash-grid-full" id="dash-row2"></div>
+    <!-- Fila 3: alertas + próximos vencimientos -->
+    <div class="dash-grid" id="dash-row3" style="grid-template-columns:1fr 1fr"></div>
+  </div>
+</div>
 
 <!-- PAGE: SEGUIMIENTO -->
 <div class="page active" id="page-seg">
@@ -880,7 +980,7 @@ function launchApp(){
   banner.style.display='flex';
   document.getElementById('sname').textContent='Google Sheets · Plan Trabajo UAF 2026';
   document.getElementById('app').style.display='block';
-  loadFromSheets().then(()=>{rebuildUI();render();});
+  loadFromSheets().then(()=>{rebuildUI();render();renderDash();});
 }
 
 async function forceSync(){
@@ -899,6 +999,7 @@ function goPage(p,el){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
   if(el)el.closest('.ni').classList.add('active');
   if(p==='adm')renderAdm();
+  if(p==='dash')renderDash();
 }
 function goSeguimiento(el){
   CF={linea:'',resp:'',estado:'',sub:''};
@@ -1416,6 +1517,255 @@ async function saveNuevaTareas(){
 }
 
 /* ═══════════════════════════════
+   RESUMEN GERENCIAL — DASHBOARD
+═══════════════════════════════ */
+const LINEA_COLORS={
+  'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS':'#378ADD',
+  'FORTALECIMIENTO DEL MODELO DE DATOS UAF':'#1D9E75',
+  'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO':'#BA7517',
+  'LABORATORIO ESTRATÉGICO':'#7A4F10',
+  'OTRAS TAREAS':'#6B3880'
+};
+const LINEA_SHORT={
+  'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS':'Monitoreo',
+  'FORTALECIMIENTO DEL MODELO DE DATOS UAF':'Datos UAF',
+  'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO':'Optimización',
+  'LABORATORIO ESTRATÉGICO':'Laboratorio',
+  'OTRAS TAREAS':'Otras tareas'
+};
+const ESTADO_COLORS={'Planificada':'#9BA8BB','En curso':'#378ADD','Completada':'#1D9E75','Atrasada':'#C04040','Pausada':'#7B5EA7'};
+
+function renderDash(){
+  if(!tasks.length)return;
+  const now=new Date();
+  document.getElementById('dash-fecha').textContent=
+    'Actualizado el '+now.toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
+
+  const tot=tasks.length;
+  const plan=tasks.filter(t=>t.estado==='Planificada').length;
+  const enc=tasks.filter(t=>t.estado==='En curso').length;
+  const comp=tasks.filter(t=>t.estado==='Completada').length;
+  const atra=tasks.filter(t=>t.estado==='Atrasada').length;
+  const avGlobal=Math.round(tasks.reduce((s,t)=>s+t.avance,0)/tot);
+  const pctComp=Math.round(comp/tot*100);
+
+  // ── KPIs ──
+  document.getElementById('dash-kpis').innerHTML=`
+    <div class="kpi k-blue">
+      <div class="kpi-label">Avance global</div>
+      <div class="kpi-value">${avGlobal}<span style="font-size:20px;color:var(--tx3)">%</span></div>
+      <div class="kpi-sub">${tot} tareas en el plan</div>
+      <div style="margin-top:10px;height:6px;background:var(--bd);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${avGlobal}%;background:#378ADD;border-radius:3px;transition:width .8s"></div>
+      </div>
+    </div>
+    <div class="kpi k-green">
+      <div class="kpi-label">Completadas</div>
+      <div class="kpi-value">${comp}<span style="font-size:20px;color:var(--tx3)">/${tot}</span></div>
+      <div class="kpi-sub">${pctComp}% del plan finalizado</div>
+      <div class="kpi-trend up" style="margin-top:8px">▲ ${pctComp}% completitud</div>
+    </div>
+    <div class="kpi k-amber">
+      <div class="kpi-label">En ejecución</div>
+      <div class="kpi-value">${enc}</div>
+      <div class="kpi-sub">${plan} planificadas · ${Math.round(enc/tot*100)}% del plan</div>
+    </div>
+    <div class="kpi k-red">
+      <div class="kpi-label">Con atraso</div>
+      <div class="kpi-value" style="color:${atra>0?'var(--red)':'var(--tx)'}">${atra}</div>
+      <div class="kpi-sub">${atra>0?Math.round(atra/tot*100)+'% del plan requiere atención':'Sin atrasos registrados'}</div>
+      ${atra>0?'<div class="kpi-trend down" style="margin-top:8px">▼ Requiere atención</div>':''}
+    </div>`;
+
+  // ── DONUT por estado ──
+  const estados=[
+    {label:'Completada',val:comp,color:'#1D9E75'},
+    {label:'En curso',val:enc,color:'#378ADD'},
+    {label:'Planificada',val:plan,color:'#9BA8BB'},
+    {label:'Atrasada',val:atra,color:'#C04040'},
+    {label:'Pausada',val:tasks.filter(t=>t.estado==='Pausada').length,color:'#7B5EA7'},
+  ].filter(e=>e.val>0);
+
+  const donutSvg=buildDonut(estados,tot,120);
+  const legendHtml=estados.map(e=>`
+    <div class="dl-row">
+      <div class="dl-dot" style="background:${e.color}"></div>
+      <div class="dl-name">${e.label}</div>
+      <div class="dl-val">${e.val}</div>
+      <div class="dl-pct">${Math.round(e.val/tot*100)}%</div>
+    </div>`).join('');
+
+  // ── BARRAS por línea ──
+  const lineas=[...new Set(tasks.map(t=>t.linea))];
+  const lineaRows=lineas.map(l=>{
+    const lt=tasks.filter(t=>t.linea===l);
+    const av=lt.length?Math.round(lt.reduce((s,t)=>s+t.avance,0)/lt.length):0;
+    const col=LINEA_COLORS[l]||'#888';
+    const short=LINEA_SHORT[l]||l;
+    const c=lt.filter(t=>t.estado==='Completada').length;
+    const a=lt.filter(t=>t.estado==='Atrasada').length;
+    return`<div class="pbar-row">
+      <div class="pbar-label" title="${l}">${short}</div>
+      <div class="pbar-track"><div class="pbar-fill" style="width:${av}%;background:${col}"></div></div>
+      <div class="pbar-pct">${av}%</div>
+      <div class="pbar-count" style="font-size:11px;color:var(--tx3)">${c}/${lt.length}${a>0?` <span style="color:var(--red)">·${a}▼</span>`:''}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('dash-row1').innerHTML=`
+    <div class="dcard">
+      <div class="dcard-head"><div class="dcard-title">Distribución por estado</div><div class="dcard-badge">${tot} tareas</div></div>
+      <div class="dcard-body"><div class="donut-wrap">${donutSvg}<div class="donut-legend">${legendHtml}</div></div></div>
+    </div>
+    <div class="dcard">
+      <div class="dcard-head"><div class="dcard-title">Avance por línea</div><div class="dcard-badge">completadas/total</div></div>
+      <div class="dcard-body">${lineaRows}</div>
+    </div>`;
+
+  // ── RESPONSABLES ──
+  const respCards=users.map(u=>{
+    const ut=tasks.filter(t=>t.responsable===u.name);
+    if(!ut.length)return'';
+    const av=Math.round(ut.reduce((s,t)=>s+t.avance,0)/ut.length);
+    const rc=CM[u.color]||CM.blue;
+    const ini=u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const stats=[
+      {label:'Completadas',val:ut.filter(t=>t.estado==='Completada').length,col:'#1D9E75'},
+      {label:'En curso',val:ut.filter(t=>t.estado==='En curso').length,col:'#378ADD'},
+      {label:'Planificadas',val:ut.filter(t=>t.estado==='Planificada').length,col:'#9BA8BB'},
+      {label:'Atrasadas',val:ut.filter(t=>t.estado==='Atrasada').length,col:'#C04040'},
+    ].filter(s=>s.val>0);
+    const barColor=av>=70?'#1D9E75':av>=40?'#378ADD':'#BA7517';
+    return`<div class="rcard">
+      <div class="rcard-top">
+        <div class="rav" style="width:34px;height:34px;font-size:12px;background:${rc.bg};color:${rc.c}">${ini}</div>
+        <div style="flex:1">
+          <div class="rcard-name">${fmtN(u.name)}</div>
+          <div class="rcard-count">${ut.length} tareas asignadas</div>
+        </div>
+        <div style="font-size:22px;font-weight:600;font-family:'DM Mono',monospace;color:${barColor}">${av}%</div>
+      </div>
+      <div class="rcard-bar"><div class="rcard-bf" style="width:${av}%;background:${barColor}"></div></div>
+      <div class="rcard-stats">
+        ${stats.map(s=>`<div class="rstat"><div class="rstat-dot" style="background:${s.col}"></div>${s.val} ${s.label.toLowerCase()}</div>`).join('')}
+      </div>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  // ── AVANCE POR SUB LÍNEA ──
+  const subs=[...new Set(tasks.map(t=>t.sub).filter(Boolean))];
+  const subRows=subs.map(s=>{
+    const st=tasks.filter(t=>t.sub===s);
+    const av=Math.round(st.reduce((a,t)=>a+t.avance,0)/st.length);
+    const linea=st[0]?.linea||'';
+    const col=LINEA_COLORS[linea]||'#888';
+    return{s,av,n:st.length,col,atra:st.filter(t=>t.estado==='Atrasada').length};
+  }).sort((a,b)=>b.av-a.av);
+
+  const subRowsHtml=subRows.map(r=>`
+    <div class="pbar-row">
+      <div class="pbar-label" title="${r.s}" style="max-width:160px">${r.s}</div>
+      <div class="pbar-track"><div class="pbar-fill" style="width:${r.av}%;background:${r.col}"></div></div>
+      <div class="pbar-pct">${r.av}%</div>
+      <div class="pbar-count">${r.n} tarea${r.n!==1?'s':''}${r.atra>0?` <span style="color:var(--red)">·${r.atra}▼</span>`:''}</div>
+    </div>`).join('');
+
+  document.getElementById('dash-row2').innerHTML=`
+    <div class="dcard">
+      <div class="dcard-head"><div class="dcard-title">Estado por responsable</div></div>
+      <div class="dcard-body"><div class="resp-cards">${respCards}</div></div>
+    </div>
+    <div class="dcard" style="margin-top:18px">
+      <div class="dcard-head"><div class="dcard-title">Avance por iniciativa (sub línea)</div><div class="dcard-badge">${subRows.length} iniciativas</div></div>
+      <div class="dcard-body" style="max-height:320px;overflow-y:auto">${subRowsHtml}</div>
+    </div>`;
+
+  // ── ALERTAS ──
+  const atrasadas=tasks.filter(t=>t.estado==='Atrasada').slice(0,8);
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  const proximas=tasks
+    .filter(t=>t.estado!=='Completada'&&t.termino)
+    .map(t=>({...t,dias:Math.ceil((new Date(t.termino)-hoy)/(86400000))}))
+    .filter(t=>t.dias>=0&&t.dias<=21)
+    .sort((a,b)=>a.dias-b.dias)
+    .slice(0,8);
+
+  const alertasHtml=atrasadas.length===0
+    ?'<div style="text-align:center;padding:32px;color:var(--tx3);font-size:13px">Sin tareas atrasadas</div>'
+    :atrasadas.map(t=>`
+      <div class="alerta-row">
+        <div class="alerta-icon atrasada">
+          <svg width="14" height="14" fill="none" stroke="var(--red)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div class="alerta-body">
+          <div class="alerta-act">${t.actividad}</div>
+          <div class="alerta-meta">${LINEA_SHORT[t.linea]||t.linea} · ${fmtN(t.responsable)} · Término: ${fmtD(t.termino)}</div>
+        </div>
+        <span class="alerta-tag tag-at">Atrasada</span>
+      </div>`).join('');
+
+  const proximasHtml=proximas.length===0
+    ?'<div style="text-align:center;padding:32px;color:var(--tx3);font-size:13px">Sin vencimientos próximos</div>'
+    :proximas.map(t=>`
+      <div class="alerta-row">
+        <div class="tl-date">${t.dias===0?'Hoy':t.dias===1?'1 día':t.dias+' días'}</div>
+        <div class="tl-body">
+          <div class="tl-act">${t.actividad}</div>
+          <div class="tl-resp">${LINEA_SHORT[t.linea]||t.linea} · ${fmtN(t.responsable)}</div>
+        </div>
+        <span class="alerta-tag ${t.dias<=7?'tag-at':'tag-ri'}">${fmtD(t.termino)}</span>
+      </div>`).join('');
+
+  document.getElementById('dash-row3').innerHTML=`
+    <div class="dcard">
+      <div class="dcard-head">
+        <div class="dcard-title">Tareas con atraso</div>
+        <div class="dcard-badge" style="color:${atra>0?'var(--red)':'var(--tx3)'}">${atra} iniciativas</div>
+      </div>
+      <div class="dcard-body" style="padding:0 0 8px;max-height:360px;overflow-y:auto">
+        <div style="padding:0 20px">${alertasHtml}</div>
+      </div>
+    </div>
+    <div class="dcard">
+      <div class="dcard-head">
+        <div class="dcard-title">Vencimientos próximos</div>
+        <div class="dcard-badge">${proximas.length} en los próximos 21 días</div>
+      </div>
+      <div class="dcard-body" style="padding:0 0 8px;max-height:360px;overflow-y:auto">
+        <div style="padding:0 20px">${proximasHtml}</div>
+      </div>
+    </div>`;
+}
+
+// Construye un SVG de donut chart
+function buildDonut(segments,total,size=120){
+  const cx=size/2,cy=size/2,r=(size/2)*0.72,stroke=(size/2)*0.28;
+  const circumference=2*Math.PI*r;
+  let offset=0;
+  const slices=segments.map(s=>{
+    const pct=s.val/total;
+    const dash=pct*circumference;
+    const gap=circumference-dash;
+    const slice=`<circle cx="${cx}" cy="${cy}" r="${r}"
+      fill="none" stroke="${s.color}" stroke-width="${stroke}"
+      stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+      stroke-dashoffset="${(-offset*circumference/total).toFixed(2)}"
+      transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dasharray .6s"/>`;
+    offset+=s.val;
+    return slice;
+  }).join('');
+  const avGlobal=Math.round(segments.reduce((s,e)=>s+e.val*e.val/total,0)/total*100);
+  // Center text: total tasks
+  const centerText=`<text x="${cx}" y="${cy-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="${size*0.18}" font-weight="600" fill="var(--tx)">${total}</text>
+    <text x="${cx}" y="${cy+12}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${size*0.1}" fill="var(--tx3)">tareas</text>`;
+  return`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex-shrink:0">${slices}${centerText}</svg>`;
+}
+
+function printDash(){
+  window.print();
+}
+
+/* ═══════════════════════════════
    EXPORT
 ═══════════════════════════════ */
 function exportCSV(){
@@ -1471,7 +1821,7 @@ document.getElementById('fsel-resp').addEventListener('change',()=>{CF.resp='';r
   // Pega aquí tu Google Client ID después de registrar la app en
   // Google Cloud Console (APIs & Services → Credentials → OAuth 2.0)
   // Formato: "xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
-  const GOOGLE_CLIENT_ID_CONFIG = '945821204702-t0s8nf6u1m5j09u11iutanuebpica0s6.apps.googleusercontent.com';
+  const GOOGLE_CLIENT_ID_CONFIG = '945821204702-t0s8nf6u1m5j09u11iutanuebpica0s6.apps.googleusercontent.com'';
   // ───────────────────────────────────────────────────────────────
 
   // Check cached user session
