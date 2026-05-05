@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Trabajo 2026 · UAF</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F3EF;--s0:#FAFAF8;--s2:#FFFFFF;
+  --bd:#E2E0D8;--bd2:#C8C6BC;
+  --tx:#1A1916;--tx2:#6B6860;--tx3:#9E9C96;
+  --ac:#2A5C45;--al:#EBF3EE;--a2:#1E3D2E;
+  --gold:#8B6914;--gl:#F5EDD8;
+  --red:#8B2A2A;--rl:#F5E8E8;
+  --blue:#1E3A5F;--bl:#E8EFF7;
+  --amb:#7A4F10;--ambl:#F7EDD8;
+  --pur:#4A2A7A;--pl:#F0EAF8;
+  --r:10px;--rs:6px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shm:0 6px 24px rgba(0,0,0,.10),0 2px 6px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5}
+button,select,input,textarea{font-family:inherit}
+
+/* ── SETUP SCREEN ── */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px}
+.setup-card{background:var(--s2);border:1px solid var(--bd);border-radius:18px;padding:44px 40px;width:100%;max-width:500px;box-shadow:var(--shm)}
+.setup-brand{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);margin-bottom:10px}
+.setup-title{font-size:24px;font-weight:600;color:var(--tx);line-height:1.2;margin-bottom:6px}
+.setup-sub{font-size:13px;color:var(--tx3);margin-bottom:32px;line-height:1.6}
+.setup-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px;display:block}
+.setup-input{width:100%;font-family:'DM Mono',monospace;font-size:12px;border:1.5px solid var(--bd);border-radius:9px;padding:11px 13px;background:var(--bg);color:var(--tx);outline:none;transition:border-color .15s;margin-bottom:6px}
+.setup-input:focus{border-color:var(--ac)}
+.setup-hint{font-size:11px;color:var(--tx3);margin-bottom:24px;line-height:1.5}
+.setup-hint a{color:var(--ac);text-decoration:none}
+.setup-btn{width:100%;padding:13px;border-radius:9px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .15s;background:var(--ac);color:#fff;letter-spacing:.01em}
+.setup-btn:hover{background:var(--a2)}
+.setup-btn:disabled{opacity:.5;cursor:default}
+.setup-err{font-size:12px;color:var(--red);margin-top:10px;display:none}
+
+/* ── SYNC BANNER ── */
+#sync-banner{background:#161614;color:#E8E6DF;padding:10px 28px;display:none;align-items:center;gap:12px;font-size:12px;min-height:42px}
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.sync-dot.ok{background:#4ade80}
+.sync-dot.busy{background:#facc15;animation:blink .8s ease-in-out infinite}
+.sync-dot.err{background:#f87171}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-info{flex:1}
+.sync-name{font-weight:500;font-size:12px}
+.sync-mode{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px}
+.sync-ts{font-size:11px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace}
+.sync-actions{display:flex;gap:8px}
+.sync-btn{font-family:inherit;font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);cursor:pointer;transition:all .13s}
+.sync-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 42px)}
+.sidebar{width:248px;background:#161614;color:#E8E6DF;display:flex;flex-direction:column;position:fixed;top:42px;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sb-logo{padding:22px 22px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-org{font-size:10px;font-weight:600;letter-spacing:.14em;color:rgba(255,255,255,.32);text-transform:uppercase;margin-bottom:3px}
+.sb-title{font-size:15px;font-weight:600;color:#fff}
+.sb-year{font-size:11px;color:rgba(255,255,255,.28);font-family:'DM Mono',monospace;margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1}
+.sb-sec{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.26);padding:0 12px;margin:16px 0 4px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:var(--rs);cursor:pointer;transition:background .12s;font-size:13px;color:rgba(255,255,255,.56);margin-bottom:1px;user-select:none}
+.ni:hover{background:rgba(255,255,255,.07);color:#fff}
+.ni.active{background:rgba(255,255,255,.11);color:#fff;font-weight:500}
+.ni svg{width:15px;height:15px;flex-shrink:0;opacity:.65}
+.ni.active svg{opacity:1}
+.nd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sb-foot{padding:14px 22px;border-top:1px solid rgba(255,255,255,.07);font-size:11px;color:rgba(255,255,255,.2)}
+
+/* ── MAIN ── */
+.main{margin-left:248px;flex:1;display:flex;flex-direction:column}
+.page{display:none;flex-direction:column;flex:1}
+.page.active{display:flex}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--s0);border-bottom:1px solid var(--bd);padding:13px 28px;display:flex;align-items:center;gap:14px;position:sticky;top:42px;z-index:50}
+.tb-info{flex:1}
+.tb-title{font-size:16px;font-weight:600}
+.tb-sub{font-size:12px;color:var(--tx3);margin-top:1px}
+.search{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:7px 13px;width:256px;transition:border-color .15s}
+.search:focus-within{border-color:var(--ac)}
+.search svg{color:var(--tx3);flex-shrink:0;width:14px;height:14px}
+.search input{border:none;background:transparent;outline:none;font-size:13px;color:var(--tx);width:100%}
+.search input::placeholder{color:var(--tx3)}
+.content{padding:22px 28px;flex:1}
+
+/* ── METRICS ── */
+.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.mc{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.mc.ac{background:var(--ac);border-color:var(--ac)}
+.mc-l{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);margin-bottom:4px}
+.mc.ac .mc-l{color:rgba(255,255,255,.55)}
+.mc-v{font-size:26px;font-weight:600;color:var(--tx);line-height:1;font-family:'DM Mono',monospace}
+.mc.ac .mc-v{color:#fff}
+.mc-s{font-size:11px;color:var(--tx3);margin-top:2px}
+.mc.ac .mc-s{color:rgba(255,255,255,.45)}
+.mc-bw{margin-top:9px;background:rgba(0,0,0,.1);border-radius:3px;height:3px;overflow:hidden}
+.mc-b{height:100%;border-radius:3px;transition:width .4s}
+
+/* ── FILTERS ── */
+.fbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fc{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;transition:all .13s;color:var(--tx2);white-space:nowrap;user-select:none}
+.fc:hover{border-color:var(--bd2);color:var(--tx)}
+.fc.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.fc .cn{font-family:'DM Mono',monospace;font-size:11px;opacity:.65}
+.fsel{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:6px 28px 6px 11px;font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E9C96' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;transition:border-color .13s}
+.fsel:focus{border-color:var(--ac);color:var(--tx)}
+.fsp{flex:1}
+.rcnt{font-size:12px;color:var(--tx3);white-space:nowrap}
+
+/* ── TABLE ── */
+.tcard{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--bg);border-bottom:1px solid var(--bd);padding:9px 14px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--bd);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#F8F7F3}
+tbody td{padding:9px 14px;vertical-align:middle}
+.tid{font-family:'DM Mono',monospace;font-size:11px;color:var(--tx3);width:38px}
+.tfecha{font-family:'DM Mono',monospace;font-size:12px;color:var(--tx2);width:76px}
+
+/* ── BADGES ── */
+.lb{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.04em;padding:3px 7px;border-radius:4px;text-transform:uppercase;white-space:nowrap}
+.lb0{background:var(--bl);color:var(--blue)}
+.lb1{background:var(--al);color:var(--a2)}
+.lb2{background:var(--gl);color:var(--gold)}
+.lb3{background:var(--ambl);color:var(--amb)}
+
+/* ── RESP ── */
+.rchip{display:flex;align-items:center;gap:7px}
+.rav{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
+
+/* ── STATUS ── */
+.sp{display:inline-flex;align-items:center;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:none;outline:none;width:100%;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='currentColor' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;padding-right:20px;transition:filter .13s}
+.sp:hover{filter:brightness(.93)}
+.s0{background:#EEF2F7;color:#3A5580}
+.s1{background:var(--al);color:var(--ac)}
+.s2c{background:#E8F5EE;color:#1A5C38}
+.s3{background:var(--rl);color:var(--red)}
+.s4{background:var(--pl);color:var(--pur)}
+
+/* ── AVANCE ── */
+.avrow{display:flex;align-items:center;gap:8px}
+.avinp{width:44px;font-family:'DM Mono',monospace;font-size:12px;border:1px solid var(--bd);border-radius:5px;padding:4px 5px;background:var(--bg);color:var(--tx);text-align:center;outline:none;transition:border-color .13s}
+.avinp:focus{border-color:var(--ac)}
+.bbg{flex:1;height:5px;background:var(--bd);border-radius:3px;overflow:hidden}
+.bf{height:100%;border-radius:3px;transition:width .3s,background .3s}
+.obsinp{width:100%;font-size:12px;border:1px solid transparent;border-radius:5px;padding:5px 7px;background:transparent;color:var(--tx);outline:none;transition:all .13s}
+.obsinp:hover{border-color:var(--bd);background:var(--bg)}
+.obsinp:focus{border-color:var(--ac);background:var(--s2)}
+.ib{width:30px;height:30px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--bg);display:flex;align-items:center;justify-content:center;transition:all .13s;color:var(--tx3);cursor:pointer}
+.ib:hover{border-color:var(--ac);background:var(--al);color:var(--ac)}
+.ib.dan:hover{border-color:var(--red);background:var(--rl);color:var(--red)}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;transition:all .13s;border:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.bg2{background:transparent;border:1px solid var(--bd);color:var(--tx2)}
+.bg2:hover{background:var(--bg);border-color:var(--bd2)}
+.bprim{background:var(--ac);color:#fff}
+.bprim:hover{background:var(--a2)}
+.bdang{background:var(--red);color:#fff}
+.bsm{padding:6px 13px;font-size:12px}
+
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.mo.open{display:flex}
+.mob{background:var(--s2);border-radius:14px;width:100%;max-width:560px;box-shadow:var(--shm);overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
+.mob.w{max-width:680px}
+.mob.n{max-width:400px}
+.moh{padding:22px 26px 18px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.moh h2{font-size:16px;font-weight:600}
+.moh p{font-size:12px;color:var(--tx3);margin-top:2px}
+.mobdy{padding:22px 26px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;flex:1}
+.mof{padding:14px 26px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;align-items:center}
+.mf label{display:block;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);margin-bottom:5px}
+.mf input[type=text],.mf input[type=date],.mf select,.mf textarea{width:100%;font-size:13px;border:1px solid var(--bd);border-radius:8px;padding:9px 11px;background:var(--bg);color:var(--tx);outline:none;transition:border-color .13s;appearance:none}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--ac)}
+.mf textarea{resize:vertical;min-height:72px}
+.mf input[type=range]{width:100%;cursor:pointer}
+.rrow{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:3px;font-family:'DM Mono',monospace}
+.mf2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mf3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* ── ADMIN ── */
+.tabs{display:flex;gap:4px;margin-bottom:18px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:4px}
+.tab{flex:1;text-align:center;padding:8px;font-size:13px;font-weight:500;border-radius:7px;cursor:pointer;transition:all .13s;color:var(--tx3)}
+.tab.on{background:var(--s2);color:var(--tx);box-shadow:var(--sh)}
+.tab:hover:not(.on){color:var(--tx2)}
+.sh2{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px}
+.sh2 div{flex:1}
+.sh2 h2{font-size:15px;font-weight:600}
+.sh2 p{font-size:12px;color:var(--tx3);margin-top:2px}
+.acard{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.ach{padding:14px 20px 12px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between}
+.ach h3{font-size:14px;font-weight:600}
+.ach p{font-size:12px;color:var(--tx3);margin-top:1px}
+.urow{display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid var(--bd);transition:background .1s}
+.urow:last-child{border-bottom:none}
+.urow:hover{background:var(--bg)}
+.uinfo{flex:1;min-width:0}
+.uname{font-weight:500;font-size:13px}
+.umeta{font-size:11px;color:var(--tx3);margin-top:1px}
+
+/* ── IMPORT ── */
+.dropzone{border:2px dashed var(--bd2);border-radius:var(--r);padding:28px 20px;text-align:center;cursor:pointer;transition:all .15s;color:var(--tx3)}
+.dropzone:hover,.dropzone.drag{border-color:var(--ac);background:var(--al);color:var(--ac)}
+.dropzone svg{margin:0 auto 8px;display:block}
+.dropzone p{font-size:13px;font-weight:500}
+.dropzone span{font-size:12px}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:52px 20px;color:var(--tx3)}
+.empty svg{margin:0 auto 12px;display:block;opacity:.28}
+.empty p{font-size:13px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shm);z-index:500;transform:translateY(72px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:9px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--tx);color:#fff}
+.toast.err{background:var(--red);color:#fff}
+.tico{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tico.ok{background:var(--ac)}
+.tico.err{background:rgba(255,255,255,.25)}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP ══ -->
+<div id="setup">
+  <div class="setup-card">
+    <div class="setup-brand">UAF · PMO · 2026</div>
+    <div class="setup-title">Plan de Trabajo</div>
+    <div class="setup-sub">Conecta con tu Google Sheet para sincronizar los datos del plan entre todos los responsables en tiempo real.</div>
+    <label class="setup-label">URL del script de Google Apps Script</label>
+    <input class="setup-input" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+    <div class="setup-hint">
+      La URL la obtuviste en Apps Script → Implementar → Gestionar implementaciones.<br>
+      Se guarda en este navegador y no se comparte con nadie.
+    </div>
+    <button class="setup-btn" id="cfg-btn" onclick="connect()">Conectar con Google Sheets</button>
+    <div class="setup-err" id="cfg-err"></div>
+  </div>
+</div>
+
+<!-- ══ SYNC BANNER ══ -->
+<div id="sync-banner" class="auth-banner">
+  <div class="sync-dot busy" id="sdot"></div>
+  <div class="sync-info">
+    <div class="sync-name" id="sname">Conectando...</div>
+    <div class="sync-mode" id="smode">Google Sheets · verificando conexión</div>
+  </div>
+  <div class="sync-ts" id="sts"></div>
+  <div class="sync-actions">
+    <button class="sync-btn" onclick="forceSync()">Sincronizar</button>
+    <button class="sync-btn" onclick="showSetup()">Configuración</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none">
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-org">UAF · PMO</div>
+    <div class="sb-title">Plan de Trabajo</div>
+    <div class="sb-year">2026 · Google Sheets</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Principal</div>
+    <div class="ni active" id="nav-seg" onclick="goPage('seg',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Seguimiento
+    </div>
+    <div class="sb-sec">Por línea</div>
+    <div class="ni" onclick="setLinea('MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS',this)"><span class="nd" style="background:#378ADD"></span>Monitoreo</div>
+    <div class="ni" onclick="setLinea('FORTALECIMIENTO DEL MODELO DE DATOS UAF',this)"><span class="nd" style="background:#1D9E75"></span>Datos UAF</div>
+    <div class="ni" onclick="setLinea('OPTIMIZACIÓN DE PROCESOS DE NEGOCIO',this)"><span class="nd" style="background:#BA7517"></span>Optimización</div>
+    <div class="ni" onclick="setLinea('LABORATORIO ESTRATÉGICO',this)"><span class="nd" style="background:#7A4F10"></span>Laboratorio</div>
+    <div class="sb-sec">Por responsable</div>
+    <div id="sb-resp"></div>
+    <div class="sb-sec">Administración</div>
+    <div class="ni" id="nav-adm" onclick="goPage('adm',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+      Administración
+    </div>
+  </nav>
+  <div class="sb-foot">Google Sheets · <span id="sb-ts">—</span></div>
+</aside>
+
+<main class="main">
+
+<!-- PAGE: SEGUIMIENTO -->
+<div class="page active" id="page-seg">
+  <div class="topbar">
+    <div class="tb-info"><div class="tb-title" id="vt">Todas las tareas</div><div class="tb-sub" id="vs">Plan de Trabajo 2026 · UAF</div></div>
+    <div class="search">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+      <input type="text" id="buscar" placeholder="Buscar actividad, sub línea...">
+    </div>
+    <button class="btn bg2 bsm" onclick="exportCSV()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      Exportar CSV
+    </button>
+  </div>
+  <div class="content">
+    <div class="mgrid">
+      <div class="mc ac"><div class="mc-l">Avance global</div><div class="mc-v" id="mv">0%</div><div class="mc-s" id="ms">de 0 tareas</div><div class="mc-bw"><div class="mc-b" id="mb" style="width:0%;background:rgba(255,255,255,.45)"></div></div></div>
+      <div class="mc"><div class="mc-l">Planificadas</div><div class="mc-v" id="m1">0</div><div class="mc-s">Sin iniciar</div></div>
+      <div class="mc"><div class="mc-l">En curso</div><div class="mc-v" id="m2">0</div><div class="mc-s">En ejecución</div></div>
+      <div class="mc"><div class="mc-l">Completadas</div><div class="mc-v" id="m3">0</div><div class="mc-s">Finalizadas</div></div>
+      <div class="mc"><div class="mc-l">Con atraso</div><div class="mc-v" id="m4" style="color:var(--red)">0</div><div class="mc-s">Requieren atención</div></div>
+    </div>
+    <div class="fbar">
+      <div class="fc on" id="fc-all" onclick="setEstado('')">Todas <span class="cn" id="cn-all">0</span></div>
+      <div class="fc" id="fc-pl" onclick="setEstado('Planificada')">Planificadas <span class="cn" id="cn-pl">—</span></div>
+      <div class="fc" id="fc-ec" onclick="setEstado('En curso')">En curso <span class="cn" id="cn-ec">—</span></div>
+      <div class="fc" id="fc-co" onclick="setEstado('Completada')">Completadas <span class="cn" id="cn-co">—</span></div>
+      <div class="fc" id="fc-at" onclick="setEstado('Atrasada')" style="color:var(--red)">Atrasadas <span class="cn" id="cn-at">—</span></div>
+      <div class="fsp"></div>
+      <select class="fsel" id="fsel-resp" onchange="render()"><option value="">Todos los responsables</option></select>
+      <div class="rcnt" id="rcnt">0 tareas</div>
+    </div>
+    <div class="tcard">
+      <div class="twrap">
+        <table>
+          <thead><tr><th class="tid">#</th><th>Línea</th><th>Actividad</th><th>Responsable</th><th>Inicio</th><th>Término</th><th>Estado</th><th>Avance</th><th>Observaciones</th><th></th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty" style="display:none">
+          <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round" stroke-width="1.5"/></svg>
+          <p>No se encontraron tareas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: ADMINISTRACIÓN -->
+<div class="page" id="page-adm">
+  <div class="topbar">
+    <div class="tb-info"><div class="tb-title">Administración</div><div class="tb-sub">Tareas, usuarios y exportación</div></div>
+  </div>
+  <div class="content">
+    <div class="tabs">
+      <div class="tab on" onclick="setAdmTab('t',this)">Tareas del plan</div>
+      <div class="tab" onclick="setAdmTab('u',this)">Usuarios</div>
+      <div class="tab" onclick="setAdmTab('e',this)">Exportar</div>
+    </div>
+
+    <!-- TAREAS -->
+    <div id="at-t">
+      <div class="sh2">
+        <div><h2>Tareas del plan</h2><p id="atc">—</p></div>
+        <button class="btn bprim bsm" onclick="openTaskMo(null)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>Nueva tarea
+        </button>
+      </div>
+      <div class="fbar" style="margin-bottom:14px">
+        <select class="fsel" id="af-l" onchange="renderAdmT()"><option value="">Todas las líneas</option></select>
+        <select class="fsel" id="af-r" onchange="renderAdmT()"><option value="">Todos los responsables</option></select>
+        <div class="fsp"></div>
+        <div class="search" style="width:200px">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+          <input type="text" id="aq" placeholder="Buscar..." oninput="renderAdmT()">
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="twrap">
+          <table>
+            <thead><tr><th style="width:34px">#</th><th style="width:88px">Línea</th><th style="width:154px">Sub línea</th><th>Actividad</th><th style="width:124px">Responsable</th><th style="width:76px">Inicio</th><th style="width:76px">Término</th><th style="width:70px"></th></tr></thead>
+            <tbody id="at-tbody"></tbody>
+          </table>
+          <div class="empty" id="at-empty" style="display:none"><svg width="38" height="38" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><p>Sin tareas.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USUARIOS -->
+    <div id="at-u" style="display:none">
+      <div class="sh2">
+        <div><h2>Usuarios del plan</h2><p id="auc">—</p></div>
+        <button class="btn bprim bsm" onclick="openUserMo(null)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>Nuevo usuario
+        </button>
+      </div>
+      <div class="acard"><div class="ach"><div><h3>Equipo del plan</h3><p>Edita o reasigna responsables</p></div></div><div id="ulist"></div></div>
+    </div>
+
+    <!-- EXPORTAR -->
+    <div id="at-e" style="display:none">
+      <div class="sh2"><div><h2>Exportar datos</h2><p>Descarga el plan en distintos formatos</p></div></div>
+      <div class="acard">
+        <div class="ach"><div><h3>Opciones</h3></div></div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:8px">
+          <button class="btn bg2" style="justify-content:flex-start" onclick="exportCSV()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Exportar CSV completo
+          </button>
+          <button class="btn bg2" style="justify-content:flex-start" onclick="exportJSON()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V8a2 2 0 00-.586-1.414l-5-5A2 2 0 0013 1H5a2 2 0 00-2 2v16a2 2 0 002 2z"/></svg>
+            Exportar backup JSON
+          </button>
+          <hr style="border:none;border-top:1px solid var(--bd);margin:4px 0">
+          <button class="btn bg2" style="justify-content:flex-start;color:var(--red)" onclick="confirmAction('Reiniciar todos los avances','¿Estás seguro? Se reiniciará estado y avance de todas las tareas.',resetAll)">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reiniciar todos los avances
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+</div>
+
+<!-- MODAL PROGRESO -->
+<div class="mo" id="mo-p">
+  <div class="mob">
+    <div class="moh"><h2 id="mp-t">Editar progreso</h2><p id="mp-s">—</p></div>
+    <div class="mobdy">
+      <div class="mf"><label>Estado</label><select id="mp-est"><option>Planificada</option><option>En curso</option><option>Completada</option><option>Atrasada</option><option>Pausada</option></select></div>
+      <div class="mf"><label>Avance: <span id="mp-avl" style="color:var(--ac);font-family:'DM Mono',monospace">0%</span></label>
+        <input type="range" id="mp-av" min="0" max="100" step="5" oninput="document.getElementById('mp-avl').textContent=this.value+'%'">
+        <div class="rrow"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+      </div>
+      <div class="mf"><label>Observaciones</label><textarea id="mp-obs" rows="3" placeholder="Avances, bloqueos, notas..."></textarea></div>
+      <div class="mf"><label>Motivo de atraso (si aplica)</label><textarea id="mp-mot" rows="2" placeholder="Describir si corresponde..."></textarea></div>
+    </div>
+    <div class="mof"><button class="btn bg2" onclick="closeMo('mo-p')">Cancelar</button><button class="btn bprim" onclick="saveProgress()">Guardar</button></div>
+  </div>
+</div>
+
+<!-- MODAL TAREA -->
+<div class="mo" id="mo-t">
+  <div class="mob w">
+    <div class="moh"><h2 id="mt-t">Nueva tarea</h2><p id="mt-s">Completa los datos</p></div>
+    <div class="mobdy">
+      <div class="mf"><label>Actividad *</label><input type="text" id="mt-act" placeholder="Descripción de la actividad"></div>
+      <div class="mf2">
+        <div class="mf"><label>Línea de trabajo *</label>
+          <select id="mt-lin"><option value="">Seleccionar...</option>
+            <option>MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS</option>
+            <option>FORTALECIMIENTO DEL MODELO DE DATOS UAF</option>
+            <option>OPTIMIZACIÓN DE PROCESOS DE NEGOCIO</option>
+            <option>LABORATORIO ESTRATÉGICO</option>
+          </select>
+        </div>
+        <div class="mf"><label>Sub línea *</label><input type="text" id="mt-sub" placeholder="Nombre de la sub línea"></div>
+      </div>
+      <div class="mf2">
+        <div class="mf"><label>Responsable *</label><select id="mt-resp"><option value="">Seleccionar...</option></select></div>
+        <div class="mf"><label>Estado inicial</label><select id="mt-est"><option>Planificada</option><option>En curso</option><option>Completada</option><option>Atrasada</option><option>Pausada</option></select></div>
+      </div>
+      <div class="mf2">
+        <div class="mf"><label>Fecha inicio *</label><input type="date" id="mt-ini"></div>
+        <div class="mf"><label>Fecha término *</label><input type="date" id="mt-ter"></div>
+      </div>
+    </div>
+    <div class="mof"><button class="btn bg2" onclick="closeMo('mo-t')">Cancelar</button><button class="btn bprim" onclick="saveTaskMo()">Guardar tarea</button></div>
+  </div>
+</div>
+
+<!-- MODAL USUARIO -->
+<div class="mo" id="mo-u">
+  <div class="mob">
+    <div class="moh"><h2 id="mu-t">Nuevo usuario</h2><p id="mu-s">Agrega un responsable</p></div>
+    <div class="mobdy">
+      <div class="mf2">
+        <div class="mf"><label>Nombre completo *</label><input type="text" id="mu-nom" placeholder="Ej: JUAN PÉREZ" style="text-transform:uppercase"></div>
+        <div class="mf"><label>Color del avatar</label>
+          <select id="mu-col"><option value="purple">Morado</option><option value="blue">Azul</option><option value="green">Verde</option><option value="coral">Coral</option><option value="teal">Teal</option><option value="amber">Ámbar</option></select>
+        </div>
+      </div>
+      <div class="mf" id="mu-rw"><label>Reasignar sus tareas a</label><select id="mu-rea"><option value="">No reasignar</option></select></div>
+    </div>
+    <div class="mof">
+      <button class="btn bg2 bsm" id="mu-del" style="color:var(--red);margin-right:auto;display:none" onclick="deleteUserConfirm()">Eliminar</button>
+      <button class="btn bg2" onclick="closeMo('mo-u')">Cancelar</button>
+      <button class="btn bprim" onclick="saveUserMo()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="mo" id="mo-c">
+  <div class="mob n">
+    <div class="moh"><h2 id="mc-t">¿Confirmar?</h2></div>
+    <div class="mobdy"><p id="mc-m" style="font-size:13px;color:var(--tx2)"></p></div>
+    <div class="mof"><button class="btn bg2" onclick="closeMo('mo-c')">Cancelar</button><button class="btn bdang" id="mc-ok">Confirmar</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="tico ok" id="tico"><svg width="10" height="10" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div>
+  <span id="tmsg">OK</span>
+</div>
+
+<script>
+/* ═══════════════════════════════
+   CONSTANTS
+═══════════════════════════════ */
+const CM={purple:{bg:'#F0EAF5',c:'#6B3880'},blue:{bg:'#E8EFF7',c:'#1E3A5F'},green:{bg:'#E8F5EE',c:'#1A5C38'},coral:{bg:'#F5EDE8',c:'#7A3820'},teal:{bg:'#E1F5EE',c:'#085041'},amber:{bg:'#F5EDD8',c:'#7A4F10'}};
+const LM={'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS':{s:'Monitoreo',c:'lb0'},'FORTALECIMIENTO DEL MODELO DE DATOS UAF':{s:'Datos UAF',c:'lb1'},'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO':{s:'Optimización',c:'lb2'},'LABORATORIO ESTRATÉGICO':{s:'Laboratorio',c:'lb3'}};
+const SC={'Planificada':'s0','En curso':'s1','Completada':'s2c','Atrasada':'s3','Pausada':'s4'};
+const SBC=['#7C4A8A','#2A5C8A','#2A6B4A','#8A4A2A','#2A6B6B','#8A7A2A'];
+const DEF_USERS=[{id:'u1',name:'ALEJANDRO CESPEDES',color:'purple'},{id:'u2',name:'CRISTIAN DIAZ',color:'blue'},{id:'u3',name:'KEVIN VILLANUEVA',color:'green'},{id:'u4',name:'DIEGO HERNANDEZ',color:'coral'}];
+const DEF_TASKS=[[1,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Definición de los modelos a explorar (AIE/DIF)','ALEJANDRO CESPEDES','2026-01-02','2026-02-01'],[2,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Recolección y preparación de los datos','ALEJANDRO CESPEDES','2026-02-02','2026-03-01'],[3,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Exploración y análisis de los datos','ALEJANDRO CESPEDES','2026-03-02','2026-04-01'],[4,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Desarrollo del primer modelo de clasificación','ALEJANDRO CESPEDES','2026-03-02','2026-05-01'],[5,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Evaluación y validación de modelo','ALEJANDRO CESPEDES','2026-04-01','2026-06-01'],[6,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Implementación en marcha blanca','ALEJANDRO CESPEDES','2026-05-01','2026-07-01'],[7,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Evaluación de ajustes','ALEJANDRO CESPEDES','2026-07-01','2026-09-01'],[8,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Despliegue y monitoreo del sistema','ALEJANDRO CESPEDES','2026-09-01','2026-10-01'],[9,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','FORTALECER GESTIÓN RIESGOS ROS','Documentación','ALEJANDRO CESPEDES','2026-01-02','2026-12-01'],[10,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Definición del objetivo analítico','ALEJANDRO CESPEDES','2026-01-02','2026-02-01'],[11,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Preparación del texto para análisis','ALEJANDRO CESPEDES','2026-02-02','2026-04-01'],[12,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Pruebas y selección de modelos','ALEJANDRO CESPEDES','2026-04-01','2026-07-01'],[13,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Detección de patrones e indicadores','ALEJANDRO CESPEDES','2026-07-01','2026-09-01'],[14,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Validación analítica y control de riesgo','ALEJANDRO CESPEDES','2026-09-01','2026-10-01'],[15,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Interpretación estratégica','ALEJANDRO CESPEDES','2026-10-01','2026-11-01'],[16,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','DESARROLLO MODELO CONTINGENCIA','Despliegue y mejora continua','ALEJANDRO CESPEDES','2026-10-01','2026-11-01'],[17,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Definición de lógicas a explorar','CRISTIAN DIAZ','2026-01-02','2026-02-01'],[18,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Selección y preparación de datos','CRISTIAN DIAZ','2026-02-02','2026-03-01'],[19,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Desarrollo de dimensiones genéricas en Python','CRISTIAN DIAZ','2026-02-02','2026-04-01'],[20,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Diseño e implementación de lógicas 1 y 2','CRISTIAN DIAZ','2026-04-01','2026-06-01'],[21,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Revisión y mejoras lógicas 1 y 2','CRISTIAN DIAZ','2026-05-01','2026-06-01'],[22,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Presentación al Comité de Prevención','CRISTIAN DIAZ','2026-06-01','2026-07-01'],[23,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Traspaso de ROS a DIF','CRISTIAN DIAZ','2026-06-01','2026-07-01'],[24,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Documentación lógicas 1 y 2','CRISTIAN DIAZ','2026-06-01','2026-08-01'],[25,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Desarrollo dimensión actividad económica (SII)','KEVIN VILLANUEVA','2026-02-02','2026-04-01'],[26,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Desarrollo dimensión proveedor anómalo (Chilecompra)','KEVIN VILLANUEVA','2026-04-01','2026-06-01'],[27,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Diseño e implementación lógicas 3 y 4','KEVIN VILLANUEVA','2026-06-01','2026-09-01'],[28,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Revisión y mejoras lógicas 3 y 4','KEVIN VILLANUEVA','2026-09-01','2026-10-01'],[29,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Presentación al Comité de Prevención','KEVIN VILLANUEVA','2026-10-01','2026-11-01'],[30,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Traspaso de ROS a DIF','KEVIN VILLANUEVA','2026-10-01','2026-11-01'],[31,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','SISTEMA SIMONE','Documentación lógicas 3 y 4','KEVIN VILLANUEVA','2026-10-01','2026-11-01'],[32,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GRAFOS RELACIONALES','Habilitar servidor Linux como laboratorio','ALEJANDRO CESPEDES','2026-01-02','2026-02-01'],[33,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GRAFOS RELACIONALES','Evolución del modelo relacional','ALEJANDRO CESPEDES','2026-02-02','2026-04-01'],[34,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GRAFOS RELACIONALES','Desarrollar capacidades avanzadas de análisis','ALEJANDRO CESPEDES','2026-04-01','2026-07-01'],[35,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GRAFOS RELACIONALES','Visualización avanzada y exploratoria','ALEJANDRO CESPEDES','2026-06-01','2026-09-01'],[36,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GRAFOS RELACIONALES','Casos de uso y transferencia de conocimiento','ALEJANDRO CESPEDES','2026-09-01','2026-10-01'],[37,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GRAFOS RELACIONALES','Documentación','ALEJANDRO CESPEDES','2026-01-02','2026-12-01'],[38,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Definición de la estructura del informe','CRISTIAN DIAZ','2026-01-02','2026-02-01'],[39,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Preparación de los datos (AIE)','CRISTIAN DIAZ','2026-01-02','2026-04-01'],[40,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Programación del generador en Python','CRISTIAN DIAZ','2026-03-02','2026-06-01'],[41,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Desarrollo de pruebas y validaciones','CRISTIAN DIAZ','2026-05-01','2026-07-01'],[42,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Corrección según validaciones','CRISTIAN DIAZ','2026-06-01','2026-08-01'],[43,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Marcha blanca del generador','CRISTIAN DIAZ','2026-07-01','2026-10-01'],[44,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Evaluación de ajustes','CRISTIAN DIAZ','2026-09-01','2026-10-01'],[45,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Despliegue y monitoreo','CRISTIAN DIAZ','2026-10-01','2026-11-01'],[46,'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS','GENERADOR REPORTES','Documentación final','CRISTIAN DIAZ','2026-10-01','2026-11-01'],[47,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','GOBERNANZA DE DATOS','Definición y formalización del modelo','KEVIN VILLANUEVA','2026-01-02','2026-03-01'],[48,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','GOBERNANZA DE DATOS','Marco normativo y documentos base','KEVIN VILLANUEVA','2026-03-02','2026-04-01'],[49,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','GOBERNANZA DE DATOS','Catálogo institucional de datos','KEVIN VILLANUEVA','2026-04-01','2026-06-01'],[50,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','GOBERNANZA DE DATOS','Criterios de calidad y controles','KEVIN VILLANUEVA','2026-06-01','2026-07-01'],[51,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','GOBERNANZA DE DATOS','Integración con analítica estratégica','KEVIN VILLANUEVA','2026-07-01','2026-09-01'],[52,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','GOBERNANZA DE DATOS','Estandarización de productos analíticos','KEVIN VILLANUEVA','2026-09-01','2026-12-01'],[53,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','LEVANTAMIENTO DATOS','Levantamiento de datos','DIEGO HERNANDEZ','2026-01-02','2026-04-01'],[54,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','LEVANTAMIENTO DATOS','Análisis de los datos','DIEGO HERNANDEZ','2026-04-01','2026-07-01'],[55,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','LEVANTAMIENTO DATOS','Elaboración de informe con resultados','DIEGO HERNANDEZ','2026-07-01','2026-10-01'],[56,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','TRAZABILIDAD POWER BI','Re circulación de la política','ALEJANDRO CESPEDES','2026-03-02','2026-04-01'],[57,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','TRAZABILIDAD POWER BI','Modificación según observaciones','ALEJANDRO CESPEDES','2026-04-01','2026-05-01'],[58,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','TRAZABILIDAD POWER BI','Difusión','ALEJANDRO CESPEDES','2026-05-01','2026-06-01'],[59,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DATOS NO ESTRUCTURADOS','Análisis del problema para DIF','KEVIN VILLANUEVA','2026-03-02','2026-04-01'],[60,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DATOS NO ESTRUCTURADOS','Preparar propuesta de captura DIF','KEVIN VILLANUEVA','2026-04-01','2026-05-01'],[61,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DATOS NO ESTRUCTURADOS','Evaluar propuesta','KEVIN VILLANUEVA','2026-05-01','2026-06-01'],[62,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DATOS NO ESTRUCTURADOS','Implementar captura de datos DIF','KEVIN VILLANUEVA','2026-06-01','2026-07-01'],[63,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DATOS NO ESTRUCTURADOS','Almacenamiento y despliegue DIF','KEVIN VILLANUEVA','2026-07-01','2026-08-01'],[64,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','CONVENIOS EXTERNOS','Elaboración de informe del levantamiento','DIEGO HERNANDEZ','2026-01-02','2026-02-01'],[65,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','CONVENIOS EXTERNOS','Panel de cumplimiento de convenios','DIEGO HERNANDEZ','2026-02-02','2026-04-01'],[66,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','CONVENIOS EXTERNOS','Gestionar actualización convenios','DIEGO HERNANDEZ','2026-03-02','2026-04-01'],[67,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DOCUMENTACIÓN AIE','Definición de metodología','DIEGO HERNANDEZ','2026-01-02','2026-02-01'],[68,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DOCUMENTACIÓN AIE','Levantamiento de procesos','DIEGO HERNANDEZ','2026-02-02','2026-04-01'],[69,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DOCUMENTACIÓN AIE','Recopilación de documentación actual','DIEGO HERNANDEZ','2026-03-02','2026-05-01'],[70,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DOCUMENTACIÓN AIE','Actualización de documentos existentes','DIEGO HERNANDEZ','2026-05-01','2026-07-01'],[71,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DOCUMENTACIÓN AIE','Elaboración de nuevos documentos','DIEGO HERNANDEZ','2026-07-01','2026-12-01'],[72,'FORTALECIMIENTO DEL MODELO DE DATOS UAF','DOCUMENTACIÓN AIE','Reporte de resultados','DIEGO HERNANDEZ','2026-10-01','2026-12-01'],[73,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MATRICES RIESGO LA/FT','Evaluación de matriz de riesgo actual','KEVIN VILLANUEVA','2026-03-02','2026-05-01'],[74,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MATRICES RIESGO LA/FT','Redefinición de variables y ponderadores','KEVIN VILLANUEVA','2026-05-01','2026-07-01'],[75,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MATRICES RIESGO LA/FT','Desarrollo del modelo en Python','KEVIN VILLANUEVA','2026-06-01','2026-10-01'],[76,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MATRICES RIESGO LA/FT','Evaluación y aplicación de mejoras','KEVIN VILLANUEVA','2026-10-01','2026-12-01'],[77,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Encuesta de satisfacción y necesidades','CRISTIAN DIAZ','2025-12-01','2026-01-01'],[78,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Revisión de resultados de encuesta','CRISTIAN DIAZ','2026-01-02','2026-02-01'],[79,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Actualización de Perfil Investigado','CRISTIAN DIAZ','2026-02-02','2026-03-01'],[80,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Actualización de PESO','CRISTIAN DIAZ','2026-03-02','2026-04-01'],[81,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Actualización Perfil ROE','CRISTIAN DIAZ','2026-04-01','2026-05-01'],[82,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Módulo consultas masivas DFyC','CRISTIAN DIAZ','2026-05-01','2026-06-01'],[83,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','HERRAMIENTAS AUTOCONSULTA','Otros desarrollos','CRISTIAN DIAZ','2026-06-01','2026-12-01'],[84,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','INDICADOR CALIDAD ROS','Evaluar modelo para texto ROS','CRISTIAN DIAZ','2026-03-02','2026-05-01'],[85,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','INDICADOR CALIDAD ROS','Propuesta de modelos','CRISTIAN DIAZ','2026-05-01','2026-06-01'],[86,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','INDICADOR CALIDAD ROS','Desarrollo e implementación de modelo','CRISTIAN DIAZ','2026-06-01','2026-09-01'],[87,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','INDICADOR CALIDAD ROS','Explotación y despliegue','CRISTIAN DIAZ','2026-09-01','2026-10-01'],[88,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','INDICADOR CALIDAD ROS','Evaluación final','CRISTIAN DIAZ','2026-10-01','2026-11-01'],[89,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Evaluar proceso actual y brechas','CRISTIAN DIAZ','2025-12-01','2026-01-01'],[90,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Definir propuestas de mejoras','CRISTIAN DIAZ','2026-01-02','2026-02-01'],[91,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Programar mejoras identificadas','KEVIN VILLANUEVA','2026-02-02','2026-04-01'],[92,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Evaluar método de traspaso seguro','CRISTIAN DIAZ','2026-02-02','2026-02-28'],[93,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Definir formato de entrega de errores','CRISTIAN DIAZ','2026-03-02','2026-05-01'],[94,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Programar controles para auditar SNA','KEVIN VILLANUEVA','2026-04-01','2026-06-01'],[95,'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO','MEJORA GESTIÓN DPTE','Elaborar documentación y manual','CRISTIAN DIAZ','2026-04-01','2026-06-01'],[96,'LABORATORIO ESTRATÉGICO','INDICADORES ESTRATÉGICOS','ROE: Complementar con información de ROE CTR','KEVIN VILLANUEVA','2026-01-02','2026-04-01'],[97,'LABORATORIO ESTRATÉGICO','INDICADORES ESTRATÉGICOS','DPTE: Generación nuevo Panel DPTE','KEVIN VILLANUEVA','2026-05-01','2026-07-01'],[98,'LABORATORIO ESTRATÉGICO','AMBIENTE DESARROLLO','Pruebas del servidor para AIE','KEVIN VILLANUEVA','2026-01-02','2026-03-01'],[99,'LABORATORIO ESTRATÉGICO','AMBIENTE DESARROLLO','Migrar aplicaciones al servidor','KEVIN VILLANUEVA','2026-03-02','2026-06-01'],[100,'LABORATORIO ESTRATÉGICO','AMBIENTE DESARROLLO','Evaluar IA local con fines generativos','KEVIN VILLANUEVA','2026-06-01','2026-08-01'],[101,'LABORATORIO ESTRATÉGICO','AMBIENTE DESARROLLO','Evaluar modelos LLM para texto ROS','KEVIN VILLANUEVA','2026-06-01','2026-08-01'],[102,'LABORATORIO ESTRATÉGICO','AMBIENTE DESARROLLO','Presentar diagnóstico IA generativa y LLM','KEVIN VILLANUEVA','2026-08-01','2026-09-01'],[103,'LABORATORIO ESTRATÉGICO','AMBIENTE DESARROLLO','Definir próximos pasos IA y LLM','KEVIN VILLANUEVA','2026-09-01','2026-10-01'],[104,'LABORATORIO ESTRATÉGICO','ACTIVOS VIRTUALES','Informe de contexto: actores y regulaciones','DIEGO HERNANDEZ','2026-01-02','2026-04-01'],[105,'LABORATORIO ESTRATÉGICO','ACTIVOS VIRTUALES','Investigación tipologías LA/FT criptoactivos','DIEGO HERNANDEZ','2026-03-02','2026-05-01'],[106,'LABORATORIO ESTRATÉGICO','ACTIVOS VIRTUALES','Integración con inteligencia financiera','DIEGO HERNANDEZ','2026-05-01','2026-07-01'],[107,'LABORATORIO ESTRATÉGICO','ACTIVOS VIRTUALES','Desarrollo de señales de alerta','DIEGO HERNANDEZ','2026-07-01','2026-09-01'],[108,'LABORATORIO ESTRATÉGICO','ACTIVOS VIRTUALES','Transferencia de conocimiento institucional','DIEGO HERNANDEZ','2026-09-01','2026-10-01']];
+
+/* ═══════════════════════════════
+   STATE
+═══════════════════════════════ */
+let SCRIPT_URL='';
+let tasks=[],users=[],nextId=109;
+let CF={linea:'',resp:'',estado:'',q:''};
+let admTab='t';
+let editPId=null,editTId=null,editUId=null,confirmCB=null;
+const debTimers={};
+
+/* helpers */
+const fmtN=n=>n.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1).toLowerCase():'').join(' ');
+const fmtD=s=>{if(!s)return'—';try{const d=new Date(s);return d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit'});}catch{return s;}};
+const bC=t=>t.avance>=100?'#1D9E75':t.estado==='Atrasada'?'#C04040':t.estado==='En curso'?'#378ADD':'#C8C6BC';
+const uC=name=>{const u=users.find(x=>x.name===name);return CM[u?.color]||CM.blue;};
+
+/* ═══════════════════════════════
+   GOOGLE SHEETS API
+═══════════════════════════════ */
+async function sheetsFetch(params,body=null){
+  if(!SCRIPT_URL)throw new Error('URL no configurada');
+  const url=SCRIPT_URL+(body?'':'?action='+params.action);
+  const opts=body
+    ?{method:'POST',body:JSON.stringify({action:params.action,...body})}
+    :{method:'GET'};
+  // Apps Script CORS workaround: use no-cors for GET, normal for POST
+  const res=await fetch(url,{...opts,redirect:'follow'});
+  const text=await res.text();
+  try{return JSON.parse(text);}catch{
+    // Apps Script sometimes returns HTML on first deploy — treat as empty
+    console.warn('Non-JSON response:',text.slice(0,200));
+    return {tasks:[]};
+  }
+}
+
+async function loadFromSheets(){
+  setSyncState('busy','Cargando datos...');
+  try{
+    const data=await sheetsFetch({action:'read'});
+    if(data.error)throw new Error(data.error);
+    if(!data.tasks||data.tasks.length===0){
+      // Seed with default data
+      await seedSheets();
+      return;
+    }
+    tasks=data.tasks.map(t=>({
+      id:parseInt(t.id)||t.id,
+      linea:t.linea||'',sub:t.sub||'',actividad:t.actividad||'',
+      responsable:t.responsable||'',inicio:t.inicio||'',termino:t.termino||'',
+      estado:t.estado||'Planificada',avance:parseInt(t.avance)||0,
+      obs:t.observaciones||'',motivo:t.motivo||''
+    }));
+    nextId=Math.max(0,...tasks.map(t=>typeof t.id==='number'?t.id:0))+1;
+    // rebuild users from tasks
+    const names=[...new Set(tasks.map(t=>t.responsable).filter(Boolean))];
+    users=DEF_USERS.filter(u=>names.includes(u.name));
+    names.forEach(n=>{if(!users.find(u=>u.name===n))users.push({id:'u'+Date.now()+Math.random(),name:n,color:'blue'});});
+    setSyncState('ok','Sincronizado con Google Sheets');
+    setTs();
+  }catch(e){
+    setSyncState('err','Error al cargar: '+e.message);
+    toast('Error al cargar datos: '+e.message,'err');
+    // fallback local
+    loadLocal();
+  }
+}
+
+async function seedSheets(){
+  toast('Cargando las 108 tareas en Google Sheets...','ok');
+  users=DEF_USERS.map(u=>({...u}));
+  tasks=DEF_TASKS.map(r=>({id:r[0],linea:r[1],sub:r[2],actividad:r[3],responsable:r[4],inicio:r[5],termino:r[6],estado:'Planificada',avance:0,obs:'',motivo:''}));
+  nextId=109;
+  try{
+    const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs,motivo:t.motivo}));
+    await sheetsFetch({action:'write'},{tasks:payload});
+    setSyncState('ok','Datos cargados en Google Sheets');
+    setTs();
+    toast('108 tareas cargadas en tu Google Sheet','ok');
+  }catch(e){
+    setSyncState('err','Error al cargar datos iniciales');
+    toast('Error al cargar datos iniciales: '+e.message,'err');
+  }
+}
+
+async function saveTaskToSheets(task){
+  setSyncState('busy','Guardando...');
+  try{
+    await sheetsFetch({action:'update'},{task:{
+      id:task.id,linea:task.linea,sub:task.sub,actividad:task.actividad,
+      responsable:task.responsable,inicio:task.inicio,termino:task.termino,
+      estado:task.estado,avance:task.avance,observaciones:task.obs||'',motivo:task.motivo||''
+    }});
+    setSyncState('ok','Guardado');setTs();
+  }catch(e){
+    setSyncState('err','Error al guardar');
+    toast('Error al guardar en Sheets: '+e.message,'err');
+  }
+}
+
+async function writeAllToSheets(){
+  setSyncState('busy','Guardando plan completo...');
+  try{
+    const payload=tasks.map(t=>({id:t.id,linea:t.linea,sub:t.sub,actividad:t.actividad,responsable:t.responsable,inicio:t.inicio,termino:t.termino,estado:t.estado,avance:t.avance,observaciones:t.obs||'',motivo:t.motivo||''}));
+    await sheetsFetch({action:'write'},{tasks:payload});
+    setSyncState('ok','Guardado');setTs();toast('Plan sincronizado','ok');
+  }catch(e){setSyncState('err','Error');toast('Error: '+e.message,'err');}
+}
+
+async function deleteFromSheets(id){
+  try{await sheetsFetch({action:'delete'},{id});}catch(e){console.warn('delete error',e);}
+}
+
+function debounceSave(task){
+  clearTimeout(debTimers[task.id]);
+  debTimers[task.id]=setTimeout(()=>saveTaskToSheets(task),1000);
+}
+
+function setSyncState(state,msg=''){
+  const dot=document.getElementById('sdot');
+  const mode=document.getElementById('smode');
+  dot.className='sync-dot '+state;
+  if(msg)mode.textContent=msg;
+}
+function setTs(){
+  const now=new Date().toLocaleString('es-CL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('sts').textContent=now;
+  const sb=document.getElementById('sb-ts');if(sb)sb.textContent=now;
+}
+
+/* ═══════════════════════════════
+   LOCAL STORAGE (fallback)
+═══════════════════════════════ */
+function loadLocal(){
+  try{
+    const d=JSON.parse(localStorage.getItem('pt2026')||'null');
+    if(d){tasks=d.tasks||[];users=d.users||DEF_USERS.map(u=>({...u}));nextId=d.nextId||109;}
+    else{
+      users=DEF_USERS.map(u=>({...u}));
+      tasks=DEF_TASKS.map(r=>({id:r[0],linea:r[1],sub:r[2],actividad:r[3],responsable:r[4],inicio:r[5],termino:r[6],estado:'Planificada',avance:0,obs:'',motivo:''}));
+      nextId=109;
+    }
+  }catch{
+    users=DEF_USERS.map(u=>({...u}));
+    tasks=DEF_TASKS.map(r=>({id:r[0],linea:r[1],sub:r[2],actividad:r[3],responsable:r[4],inicio:r[5],termino:r[6],estado:'Planificada',avance:0,obs:'',motivo:''}));
+    nextId=109;
+  }
+}
+
+/* ═══════════════════════════════
+   SETUP & CONNECT
+═══════════════════════════════ */
+async function connect(){
+  const url=document.getElementById('cfg-url').value.trim();
+  const err=document.getElementById('cfg-err');
+  err.style.display='none';
+  if(!url||!url.includes('script.google.com')){err.textContent='Ingresa una URL válida de Google Apps Script.';err.style.display='block';return;}
+  const btn=document.getElementById('cfg-btn');
+  btn.disabled=true;btn.textContent='Verificando...';
+  try{
+    const res=await fetch(url+'?action=ping',{redirect:'follow'});
+    const txt=await res.text();
+    const data=JSON.parse(txt);
+    if(!data.ok)throw new Error('El script no responde correctamente');
+    SCRIPT_URL=url;
+    localStorage.setItem('pt2026_url',url);
+    launchApp();
+  }catch(e){
+    err.textContent='No se pudo conectar: '+e.message+'. Verifica que el script esté publicado como "Cualquier persona".';
+    err.style.display='block';
+    btn.disabled=false;btn.textContent='Conectar con Google Sheets';
+  }
+}
+
+function showSetup(){document.getElementById('setup').style.display='flex';}
+
+function launchApp(){
+  document.getElementById('setup').style.display='none';
+  const banner=document.getElementById('sync-banner');
+  banner.style.display='flex';
+  document.getElementById('sname').textContent='Google Sheets · Plan Trabajo UAF 2026';
+  document.getElementById('app').style.display='block';
+  loadFromSheets().then(()=>{rebuildUI();render();});
+}
+
+async function forceSync(){
+  await loadFromSheets();
+  rebuildUI();render();
+  if(admTab==='t')renderAdmT();
+  if(admTab==='u')renderAdmU();
+}
+
+/* ═══════════════════════════════
+   NAVIGATION
+═══════════════════════════════ */
+function goPage(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.closest('.ni').classList.add('active');
+  if(p==='adm')renderAdm();
+}
+function setAdmTab(t,el){
+  admTab=t;
+  ['t','u','e'].forEach(x=>document.getElementById('at-'+x).style.display=x===t?'block':'none');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  if(el)el.classList.add('on');
+  renderAdm();
+}
+function setLinea(l,el){
+  CF.linea=l;CF.resp='';
+  document.getElementById('vt').textContent=LM[l]?.s||l;
+  document.getElementById('vs').textContent='Filtrado por línea';
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.closest('.ni').classList.add('active');
+  goPage('seg',null);render();
+}
+function setResp(name,el){
+  CF.resp=name;CF.linea='';
+  document.getElementById('fsel-resp').value=name;
+  document.getElementById('vt').textContent=fmtN(name);
+  document.getElementById('vs').textContent='Tareas asignadas';
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.closest('.ni').classList.add('active');
+  goPage('seg',null);render();
+}
+function setEstado(s){
+  CF.estado=s;
+  const map={'':'fc-all','Planificada':'fc-pl','En curso':'fc-ec','Completada':'fc-co','Atrasada':'fc-at'};
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+  const ch=document.getElementById(map[s]||'fc-all');if(ch)ch.classList.add('on');
+  render();
+}
+
+/* ═══════════════════════════════
+   METRICS & RENDER
+═══════════════════════════════ */
+function updateMetrics(vis){
+  const tot=vis.length,avg=tot?Math.round(vis.reduce((s,t)=>s+t.avance,0)/tot):0;
+  document.getElementById('mv').textContent=avg+'%';
+  document.getElementById('ms').textContent='de '+tot+' tareas';
+  document.getElementById('mb').style.width=avg+'%';
+  document.getElementById('m1').textContent=vis.filter(t=>t.estado==='Planificada').length;
+  document.getElementById('m2').textContent=vis.filter(t=>t.estado==='En curso').length;
+  document.getElementById('m3').textContent=vis.filter(t=>t.estado==='Completada').length;
+  document.getElementById('m4').textContent=vis.filter(t=>t.estado==='Atrasada').length;
+  document.getElementById('cn-all').textContent=tasks.length;
+  document.getElementById('cn-pl').textContent=tasks.filter(t=>t.estado==='Planificada').length;
+  document.getElementById('cn-ec').textContent=tasks.filter(t=>t.estado==='En curso').length;
+  document.getElementById('cn-co').textContent=tasks.filter(t=>t.estado==='Completada').length;
+  document.getElementById('cn-at').textContent=tasks.filter(t=>t.estado==='Atrasada').length;
+}
+
+function render(){
+  const q=(document.getElementById('buscar').value||'').toLowerCase();
+  const fr=document.getElementById('fsel-resp').value||CF.resp;
+  const vis=tasks.filter(t=>{
+    if(CF.linea&&t.linea!==CF.linea)return false;
+    if(fr&&t.responsable!==fr)return false;
+    if(CF.estado&&t.estado!==CF.estado)return false;
+    if(q&&!t.actividad.toLowerCase().includes(q)&&!t.sub.toLowerCase().includes(q)&&!t.responsable.toLowerCase().includes(q))return false;
+    return true;
+  });
+  updateMetrics(vis);
+  document.getElementById('rcnt').textContent=vis.length+' '+(vis.length===1?'tarea':'tareas');
+  const tb=document.getElementById('tbody'),em=document.getElementById('empty');
+  if(!vis.length){tb.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+  tb.innerHTML=vis.map(t=>{
+    const rc=uC(t.responsable),ini=t.responsable.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const nm=t.responsable.split(' ').slice(0,2).map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join(' ');
+    const lm=LM[t.linea]||{s:'—',c:'lb0'},bc=bC(t),sc=SC[t.estado]||'s0';
+    return`<tr>
+      <td class="tid">${t.id}</td>
+      <td><span class="lb ${lm.c}">${lm.s}</span></td>
+      <td style="max-width:236px">
+        <div style="font-weight:500;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${t.actividad}</div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:224px">${t.sub}</div>
+      </td>
+      <td style="width:124px">
+        <div class="rchip">
+          <div class="rav" style="width:26px;height:26px;font-size:10px;background:${rc.bg};color:${rc.c}">${ini}</div>
+          <span style="font-size:12px;color:var(--tx2)">${nm}</span>
+        </div>
+      </td>
+      <td class="tfecha">${fmtD(t.inicio)}</td>
+      <td class="tfecha">${fmtD(t.termino)}</td>
+      <td style="width:116px">
+        <select class="sp ${sc}" onchange="quickStatus(${t.id},this)">
+          <option${t.estado==='Planificada'?' selected':''}>Planificada</option>
+          <option${t.estado==='En curso'?' selected':''}>En curso</option>
+          <option${t.estado==='Completada'?' selected':''}>Completada</option>
+          <option${t.estado==='Atrasada'?' selected':''}>Atrasada</option>
+          <option${t.estado==='Pausada'?' selected':''}>Pausada</option>
+        </select>
+      </td>
+      <td style="width:132px">
+        <div class="avrow">
+          <input class="avinp" type="number" min="0" max="100" value="${t.avance}" onchange="quickAvance(${t.id},this)">
+          <div class="bbg"><div class="bf" id="bf-${t.id}" style="width:${t.avance}%;background:${bc}"></div></div>
+        </div>
+      </td>
+      <td style="min-width:158px"><input class="obsinp" type="text" placeholder="Observación..." value="${(t.obs||'').replace(/"/g,'&quot;')}" onchange="quickObs(${t.id},this)"></td>
+      <td style="width:36px"><button class="ib" onclick="openProgressMo(${t.id})" title="Editar detalle"><svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════
+   QUICK ACTIONS
+═══════════════════════════════ */
+function quickStatus(id,sel){
+  const t=tasks.find(x=>x.id==id);if(!t)return;
+  t.estado=sel.value;sel.className='sp '+(SC[sel.value]||'s0');
+  const b=document.getElementById('bf-'+id);if(b)b.style.background=bC(t);
+  debounceSave(t);updateMetrics(tasks);toast('Estado actualizado');
+}
+function quickAvance(id,inp){
+  const t=tasks.find(x=>x.id==id);if(!t)return;
+  const v=Math.min(100,Math.max(0,parseInt(inp.value)||0));
+  t.avance=v;inp.value=v;
+  const b=document.getElementById('bf-'+id);if(b){b.style.width=v+'%';b.style.background=bC(t);}
+  debounceSave(t);updateMetrics(tasks);
+}
+function quickObs(id,inp){
+  const t=tasks.find(x=>x.id==id);if(!t)return;
+  t.obs=inp.value;debounceSave(t);
+}
+
+/* ═══════════════════════════════
+   PROGRESS MODAL
+═══════════════════════════════ */
+function openProgressMo(id){
+  const t=tasks.find(x=>x.id==id);if(!t)return;editPId=id;
+  document.getElementById('mp-t').textContent=t.actividad;
+  document.getElementById('mp-s').textContent='#'+t.id+' · '+(LM[t.linea]?.s||t.linea)+' · '+t.sub;
+  document.getElementById('mp-est').value=t.estado;
+  document.getElementById('mp-av').value=t.avance;
+  document.getElementById('mp-avl').textContent=t.avance+'%';
+  document.getElementById('mp-obs').value=t.obs||'';
+  document.getElementById('mp-mot').value=t.motivo||'';
+  openMo('mo-p');
+}
+function saveProgress(){
+  const t=tasks.find(x=>x.id==editPId);if(!t)return;
+  t.estado=document.getElementById('mp-est').value;
+  t.avance=parseInt(document.getElementById('mp-av').value)||0;
+  t.obs=document.getElementById('mp-obs').value;
+  t.motivo=document.getElementById('mp-mot').value;
+  closeMo('mo-p');saveTaskToSheets(t);render();toast('Tarea actualizada');
+}
+
+/* ═══════════════════════════════
+   TASK MODAL
+═══════════════════════════════ */
+function openTaskMo(id){
+  editTId=id;const t=id!=null?tasks.find(x=>x.id==id):null;
+  document.getElementById('mt-t').textContent=t?'Editar tarea':'Nueva tarea';
+  document.getElementById('mt-s').textContent=t?'Tarea #'+t.id:'Completa los datos';
+  document.getElementById('mt-act').value=t?t.actividad:'';
+  document.getElementById('mt-lin').value=t?t.linea:'';
+  document.getElementById('mt-sub').value=t?t.sub:'';
+  document.getElementById('mt-resp').value=t?t.responsable:'';
+  document.getElementById('mt-ini').value=t?t.inicio:'';
+  document.getElementById('mt-ter').value=t?t.termino:'';
+  document.getElementById('mt-est').value=t?(t.estado||'Planificada'):'Planificada';
+  openMo('mo-t');
+}
+async function saveTaskMo(){
+  const act=document.getElementById('mt-act').value.trim();
+  const lin=document.getElementById('mt-lin').value;
+  const sub=document.getElementById('mt-sub').value.trim();
+  const resp=document.getElementById('mt-resp').value;
+  const ini=document.getElementById('mt-ini').value;
+  const ter=document.getElementById('mt-ter').value;
+  const est=document.getElementById('mt-est').value;
+  if(!act||!lin||!sub||!resp||!ini||!ter){toast('Completa todos los campos (*)','err');return;}
+  closeMo('mo-t');
+  if(editTId!=null){
+    const t=tasks.find(x=>x.id==editTId);
+    if(t){t.actividad=act;t.linea=lin;t.sub=sub;t.responsable=resp;t.inicio=ini;t.termino=ter;t.estado=est;await saveTaskToSheets(t);}
+    toast('Tarea actualizada');
+  }else{
+    const nt={id:nextId++,linea:lin,sub,actividad:act,responsable:resp,inicio:ini,termino:ter,estado:est,avance:0,obs:'',motivo:''};
+    tasks.push(nt);await saveTaskToSheets(nt);
+    toast('Tarea creada');
+  }
+  rebuildUI();renderAdmT();render();
+}
+async function deleteTask(id){
+  confirmAction('¿Eliminar esta tarea?','Esta acción no se puede deshacer.',async()=>{
+    await deleteFromSheets(id);
+    tasks=tasks.filter(x=>x.id!=id);
+    rebuildUI();renderAdmT();render();toast('Tarea eliminada');
+  });
+}
+
+/* ═══════════════════════════════
+   USER MODAL
+═══════════════════════════════ */
+function openUserMo(id){
+  editUId=id;const u=id?users.find(x=>x.id===id):null;
+  document.getElementById('mu-t').textContent=u?'Editar usuario':'Nuevo usuario';
+  document.getElementById('mu-s').textContent=u?'Modifica datos':'Agrega un responsable';
+  document.getElementById('mu-nom').value=u?u.name:'';
+  document.getElementById('mu-col').value=u?(u.color||'blue'):'blue';
+  const rsel=document.getElementById('mu-rea');
+  rsel.innerHTML='<option value="">No reasignar</option>';
+  users.filter(x=>x.id!==id).forEach(x=>{rsel.innerHTML+=`<option value="${x.name}">${fmtN(x.name)}</option>`;});
+  document.getElementById('mu-rw').style.display=u?'block':'none';
+  document.getElementById('mu-del').style.display=u?'block':'none';
+  openMo('mo-u');
+}
+async function saveUserMo(){
+  const name=document.getElementById('mu-nom').value.trim().toUpperCase();
+  const color=document.getElementById('mu-col').value;
+  const rea=document.getElementById('mu-rea').value;
+  if(!name){toast('Ingresa un nombre','err');return;}
+  closeMo('mo-u');
+  if(editUId){
+    const u=users.find(x=>x.id===editUId);
+    if(u){
+      const old=u.name;u.name=name;u.color=color;
+      const changed=[];
+      tasks.forEach(t=>{if(t.responsable===old){t.responsable=name;changed.push(t);}});
+      if(rea)tasks.forEach(t=>{if(t.responsable===name){t.responsable=rea;changed.push(t);}});
+      if(changed.length>0)await writeAllToSheets();
+    }
+    toast('Usuario actualizado');
+  }else{
+    if(users.find(u=>u.name===name)){toast('Ya existe ese usuario','err');return;}
+    users.push({id:'u'+Date.now(),name,color});
+    toast('Usuario creado');
+  }
+  rebuildUI();renderAdmU();render();
+}
+function deleteUserConfirm(){
+  const u=users.find(x=>x.id===editUId);if(!u)return;
+  const cnt=tasks.filter(t=>t.responsable===u.name).length;
+  confirmAction('Eliminar usuario',`¿Eliminar a ${fmtN(u.name)}? Tiene ${cnt} tarea(s). Reasígnalas primero si es necesario.`,async()=>{
+    users=users.filter(x=>x.id!==editUId);
+    closeMo('mo-u');rebuildUI();renderAdmU();render();toast('Usuario eliminado');
+  });
+}
+
+/* ═══════════════════════════════
+   ADMIN RENDER
+═══════════════════════════════ */
+function renderAdm(){if(admTab==='t')renderAdmT();if(admTab==='u')renderAdmU();}
+function renderAdmT(){
+  const fl=document.getElementById('af-l').value;
+  const fr=document.getElementById('af-r').value;
+  const q=(document.getElementById('aq').value||'').toLowerCase();
+  const vis=tasks.filter(t=>{
+    if(fl&&t.linea!==fl)return false;
+    if(fr&&t.responsable!==fr)return false;
+    if(q&&!t.actividad.toLowerCase().includes(q)&&!t.sub.toLowerCase().includes(q))return false;
+    return true;
+  });
+  document.getElementById('atc').textContent=tasks.length+' tareas · mostrando '+vis.length;
+  const tb=document.getElementById('at-tbody'),em=document.getElementById('at-empty');
+  if(!vis.length){tb.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+  tb.innerHTML=vis.map(t=>{
+    const lm=LM[t.linea]||{s:'—',c:'lb0'};
+    const rc=uC(t.responsable),ini=t.responsable.split(' ').slice(0,2).map(w=>w[0]).join('');
+    return`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--tx3)">${t.id}</td>
+      <td><span class="lb ${lm.c}">${lm.s}</span></td>
+      <td style="font-size:12px;color:var(--tx2);max-width:148px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.sub}</td>
+      <td style="max-width:254px"><div style="font-weight:500;font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${t.actividad}</div></td>
+      <td><div class="rchip"><div class="rav" style="width:24px;height:24px;font-size:9px;background:${rc.bg};color:${rc.c}">${ini}</div><span style="font-size:12px;color:var(--tx2)">${fmtN(t.responsable)}</span></div></td>
+      <td class="tfecha">${fmtD(t.inicio)}</td>
+      <td class="tfecha">${fmtD(t.termino)}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="ib" onclick="openTaskMo(${t.id})"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></button>
+        <button class="ib dan" onclick="deleteTask(${t.id})"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+function renderAdmU(){
+  document.getElementById('auc').textContent=users.length+' usuarios registrados';
+  document.getElementById('ulist').innerHTML=users.map(u=>{
+    const rc=CM[u.color]||CM.blue,ini=u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const cnt=tasks.filter(t=>t.responsable===u.name).length;
+    return`<div class="urow">
+      <div class="rav" style="width:38px;height:38px;font-size:13px;background:${rc.bg};color:${rc.c}">${ini}</div>
+      <div class="uinfo"><div class="uname">${fmtN(u.name)}</div><div class="umeta">${cnt} tarea${cnt!==1?'s':''} asignada${cnt!==1?'s':''}</div></div>
+      <button class="ib" onclick="openUserMo('${u.id}')"><svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></button>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════
+   REBUILD DYNAMIC UI
+═══════════════════════════════ */
+function rebuildUI(){
+  // sidebar resp
+  document.getElementById('sb-resp').innerHTML=users.map((u,i)=>`
+    <div class="ni" onclick="setResp('${u.name}',this)">
+      <span class="nd" style="background:${SBC[i%SBC.length]}"></span>
+      ${fmtN(u.name).split(' ').slice(0,2).map((w,j)=>j===1?w[0]+'.':w).join(' ')}
+    </div>`).join('');
+  // fsel-resp
+  const fr=document.getElementById('fsel-resp');
+  fr.innerHTML='<option value="">Todos los responsables</option>';
+  users.forEach(u=>{fr.innerHTML+=`<option value="${u.name}">${fmtN(u.name)}</option>`;});
+  // admin line filter
+  const afl=document.getElementById('af-l');
+  afl.innerHTML='<option value="">Todas las líneas</option>';
+  [...new Set(tasks.map(t=>t.linea))].forEach(l=>{afl.innerHTML+=`<option value="${l}">${LM[l]?.s||l}</option>`;});
+  // admin resp filter
+  const afr=document.getElementById('af-r');
+  afr.innerHTML='<option value="">Todos los responsables</option>';
+  users.forEach(u=>{afr.innerHTML+=`<option value="${u.name}">${fmtN(u.name)}</option>`;});
+  // task modal resp
+  const mr=document.getElementById('mt-resp');
+  mr.innerHTML='<option value="">Seleccionar...</option>';
+  users.forEach(u=>{mr.innerHTML+=`<option value="${u.name}">${fmtN(u.name)}</option>`;});
+}
+
+/* ═══════════════════════════════
+   EXPORT
+═══════════════════════════════ */
+function exportCSV(){
+  const rows=[['ID','Línea','Sub línea','Actividad','Responsable','Inicio','Término','Estado','Avance %','Observaciones','Motivo atraso']];
+  tasks.forEach(t=>rows.push([t.id,t.linea,t.sub,t.actividad,t.responsable,t.inicio,t.termino,t.estado,t.avance,t.obs||'',t.motivo||'']));
+  const csv=rows.map(r=>r.map(c=>'"'+(String(c).replace(/"/g,'""'))+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='plan_trabajo_2026.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('CSV exportado');
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify({tasks,users,nextId},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='backup_plan_2026.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('Backup exportado');
+}
+async function resetAll(){
+  tasks.forEach(t=>{t.avance=0;t.estado='Planificada';t.obs='';t.motivo='';});
+  await writeAllToSheets();render();toast('Avances reiniciados');
+}
+
+/* ═══════════════════════════════
+   MODALS & TOAST
+═══════════════════════════════ */
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
+function confirmAction(title,msg,cb){
+  document.getElementById('mc-t').textContent=title;
+  document.getElementById('mc-m').textContent=msg;
+  confirmCB=cb;openMo('mo-c');
+}
+document.getElementById('mc-ok').onclick=()=>{closeMo('mo-c');if(confirmCB)confirmCB();};
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.mo.open').forEach(m=>m.classList.remove('open'));});
+
+let tt;
+function toast(msg,type='ok'){
+  clearTimeout(tt);
+  const el=document.getElementById('toast'),ico=document.getElementById('tico');
+  document.getElementById('tmsg').textContent=msg;
+  el.className='toast show '+type;ico.className='tico '+type;
+  tt=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+/* ═══════════════════════════════
+   INIT
+═══════════════════════════════ */
+document.getElementById('buscar').addEventListener('input',render);
+document.getElementById('fsel-resp').addEventListener('change',()=>{CF.resp='';render();});
+
+// Check saved URL and auto-connect
+(function boot(){
+  const saved=localStorage.getItem('pt2026_url');
+  if(saved){
+    document.getElementById('cfg-url').value=saved;
+    SCRIPT_URL=saved;
+    launchApp();
+  }
+})();
+</script>
+</body>
+</html>
