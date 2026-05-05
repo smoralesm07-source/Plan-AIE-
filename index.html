@@ -145,7 +145,7 @@ tbody td{padding:9px 14px;vertical-align:middle}
 
 /* ── BADGES ── */
 .lb{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.04em;padding:3px 7px;border-radius:4px;text-transform:uppercase;white-space:nowrap}
-.lb0{background:var(--bl);color:var(--blue)}
+.lb0{background:var(--bl);color:var(--blue)}.lb4{background:var(--pl);color:var(--pur)}
 .lb1{background:var(--al);color:var(--a2)}
 .lb2{background:var(--gl);color:var(--gold)}
 .lb3{background:var(--ambl);color:var(--amb)}
@@ -313,15 +313,18 @@ tbody td{padding:9px 14px;vertical-align:middle}
   </div>
   <nav class="sb-nav">
     <div class="sb-sec">Principal</div>
-    <div class="ni active" id="nav-seg" onclick="goPage('seg',this)">
+    <div class="ni active" id="nav-seg" onclick="goSeguimiento(this)">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Seguimiento
     </div>
+    <div class="sb-sec">Por sub línea</div>
+    <div id="sb-sub"></div>
     <div class="sb-sec">Por línea</div>
     <div class="ni" onclick="setLinea('MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS',this)"><span class="nd" style="background:#378ADD"></span>Monitoreo</div>
     <div class="ni" onclick="setLinea('FORTALECIMIENTO DEL MODELO DE DATOS UAF',this)"><span class="nd" style="background:#1D9E75"></span>Datos UAF</div>
     <div class="ni" onclick="setLinea('OPTIMIZACIÓN DE PROCESOS DE NEGOCIO',this)"><span class="nd" style="background:#BA7517"></span>Optimización</div>
     <div class="ni" onclick="setLinea('LABORATORIO ESTRATÉGICO',this)"><span class="nd" style="background:#7A4F10"></span>Laboratorio</div>
+    <div class="ni" onclick="setLinea('OTRAS TAREAS',this)"><span class="nd" style="background:#6B3880"></span>Otras tareas</div>
     <div class="sb-sec">Por responsable</div>
     <div id="sb-resp"></div>
     <div class="sb-sec">Administración</div>
@@ -343,6 +346,10 @@ tbody td{padding:9px 14px;vertical-align:middle}
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
       <input type="text" id="buscar" placeholder="Buscar actividad, sub línea...">
     </div>
+    <button class="btn bprim bsm" onclick="openNuevaTareaMo()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+      Nuevas tareas
+    </button>
     <button class="btn bg2 bsm" onclick="exportCSV()">
       <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
       Exportar CSV
@@ -363,6 +370,7 @@ tbody td{padding:9px 14px;vertical-align:middle}
       <div class="fc" id="fc-co" onclick="setEstado('Completada')">Completadas <span class="cn" id="cn-co">—</span></div>
       <div class="fc" id="fc-at" onclick="setEstado('Atrasada')" style="color:var(--red)">Atrasadas <span class="cn" id="cn-at">—</span></div>
       <div class="fsp"></div>
+      <select class="fsel" id="fsel-sub" onchange="setSub(this.value)"><option value="">Todas las sub líneas</option></select>
       <select class="fsel" id="fsel-resp" onchange="render()"><option value="">Todos los responsables</option></select>
       <div class="rcnt" id="rcnt">0 tareas</div>
     </div>
@@ -538,6 +546,30 @@ tbody td{padding:9px 14px;vertical-align:middle}
   </div>
 </div>
 
+<!-- MODAL NUEVA TAREA RÁPIDA -->
+<div class="mo" id="mo-nt">
+  <div class="mob w">
+    <div class="moh">
+      <h2>Nuevas tareas</h2>
+      <p>Se agregan en la categoría <strong>OTRAS TAREAS</strong> · línea Otras</p>
+    </div>
+    <div class="mobdy">
+      <div id="nt-rows"></div>
+      <button class="btn bg2 bsm" onclick="addNtRow()" style="align-self:flex-start;margin-top:4px">
+        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+        Agregar otra fila
+      </button>
+      <div style="background:var(--al);border:1px solid var(--ac);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--a2);margin-top:4px">
+        Las tareas se crean con línea <strong>OTRAS TAREAS</strong> y estado calculado automáticamente según las fechas que ingreses.
+      </div>
+    </div>
+    <div class="mof">
+      <button class="btn bg2" onclick="closeMo('mo-nt')">Cancelar</button>
+      <button class="btn bprim" onclick="saveNuevaTareas()">Guardar en Sheets</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">
   <div class="tico ok" id="tico"><svg width="10" height="10" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></div>
@@ -549,7 +581,7 @@ tbody td{padding:9px 14px;vertical-align:middle}
    CONSTANTS
 ═══════════════════════════════ */
 const CM={purple:{bg:'#F0EAF5',c:'#6B3880'},blue:{bg:'#E8EFF7',c:'#1E3A5F'},green:{bg:'#E8F5EE',c:'#1A5C38'},coral:{bg:'#F5EDE8',c:'#7A3820'},teal:{bg:'#E1F5EE',c:'#085041'},amber:{bg:'#F5EDD8',c:'#7A4F10'}};
-const LM={'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS':{s:'Monitoreo',c:'lb0'},'FORTALECIMIENTO DEL MODELO DE DATOS UAF':{s:'Datos UAF',c:'lb1'},'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO':{s:'Optimización',c:'lb2'},'LABORATORIO ESTRATÉGICO':{s:'Laboratorio',c:'lb3'}};
+const LM={'MONITOREO, DETECCIÓN Y REPORTE DE ANOMALÍAS':{s:'Monitoreo',c:'lb0'},'FORTALECIMIENTO DEL MODELO DE DATOS UAF':{s:'Datos UAF',c:'lb1'},'OPTIMIZACIÓN DE PROCESOS DE NEGOCIO':{s:'Optimización',c:'lb2'},'LABORATORIO ESTRATÉGICO':{s:'Laboratorio',c:'lb3'},'OTRAS TAREAS':{s:'Otras',c:'lb4'}};
 const SC={'Planificada':'s0','En curso':'s1','Completada':'s2c','Atrasada':'s3','Pausada':'s4'};
 const SBC=['#7C4A8A','#2A5C8A','#2A6B4A','#8A4A2A','#2A6B6B','#8A7A2A'];
 const DEF_USERS=[{id:'u1',name:'ALEJANDRO CESPEDES',color:'purple'},{id:'u2',name:'CRISTIAN DIAZ',color:'blue'},{id:'u3',name:'KEVIN VILLANUEVA',color:'green'},{id:'u4',name:'DIEGO HERNANDEZ',color:'coral'}];
@@ -565,10 +597,10 @@ let currentUser = null;       // { name, email, picture, initials }
 // Edita este array para controlar quién puede acceder.
 // Si está vacío, cualquier cuenta Google puede entrar.
 const ALLOWED_EMAILS = [
-  // 'acespedes@uaf.gob.cl',
-  // 'cdiaz@uaf.gob.cl',
-  // 'kvillanueva@uaf.gob.cl',
-  // 'dhernandez@uaf.gob.cl',
+  // 'alejandro.cespedes@uaf.cl',
+  // 'cristian.diaz@uaf.cl',
+  // 'kevin.villanueva@uaf.cl',
+  // 'diego.hernandez@uaf.cl',
 ];
 
 function initGoogleAuth(clientId){
@@ -657,7 +689,7 @@ function updateAuthBanner(){
 ═══════════════════════════════ */
 let SCRIPT_URL='';
 let tasks=[],users=[],nextId=109;
-let CF={linea:'',resp:'',estado:'',q:''};
+let CF={linea:'',resp:'',estado:'',sub:'',q:''};
 let admTab='t';
 let editPId=null,editTId=null,editUId=null,confirmCB=null;
 const debTimers={};
@@ -861,6 +893,20 @@ function goPage(p,el){
   if(el)el.closest('.ni').classList.add('active');
   if(p==='adm')renderAdm();
 }
+function goSeguimiento(el){
+  CF={linea:'',resp:'',estado:'',sub:''};
+  document.getElementById('buscar').value='';
+  document.getElementById('fsel-resp').value='';
+  document.getElementById('fsel-sub').value='';
+  document.getElementById('vt').textContent='Todas las tareas';
+  document.getElementById('vs').textContent='Plan de Trabajo 2026 · UAF';
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.closest('.ni').classList.add('active');
+  setEstado('');
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-seg').classList.add('active');
+  render();
+}
 function setAdmTab(t,el){
   admTab=t;
   ['t','u','e'].forEach(x=>document.getElementById('at-'+x).style.display=x===t?'block':'none');
@@ -868,8 +914,22 @@ function setAdmTab(t,el){
   if(el)el.classList.add('on');
   renderAdm();
 }
+function setSub(val,el){
+  CF.sub=val;CF.linea='';
+  if(val){
+    document.getElementById('vt').textContent=val;
+    document.getElementById('vs').textContent='Filtrado por sub línea';
+    document.getElementById('fsel-sub').value=val;
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+    if(el)el.closest('.ni').classList.add('active');
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    document.getElementById('page-seg').classList.add('active');
+  }
+  render();
+}
 function setLinea(l,el){
-  CF.linea=l;CF.resp='';
+  CF.linea=l;CF.resp='';CF.sub='';
+  document.getElementById('fsel-sub').value='';
   document.getElementById('vt').textContent=LM[l]?.s||l;
   document.getElementById('vs').textContent='Filtrado por línea';
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -877,8 +937,9 @@ function setLinea(l,el){
   goPage('seg',null);render();
 }
 function setResp(name,el){
-  CF.resp=name;CF.linea='';
+  CF.resp=name;CF.linea='';CF.sub='';
   document.getElementById('fsel-resp').value=name;
+  document.getElementById('fsel-sub').value='';
   document.getElementById('vt').textContent=fmtN(name);
   document.getElementById('vs').textContent='Tareas asignadas';
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -917,6 +978,7 @@ function render(){
   const fr=document.getElementById('fsel-resp').value||CF.resp;
   const vis=tasks.filter(t=>{
     if(CF.linea&&t.linea!==CF.linea)return false;
+    if(CF.sub&&t.sub!==CF.sub)return false;
     if(fr&&t.responsable!==fr)return false;
     if(CF.estado&&t.estado!==CF.estado)return false;
     if(q&&!t.actividad.toLowerCase().includes(q)&&!t.sub.toLowerCase().includes(q)&&!t.responsable.toLowerCase().includes(q))return false;
@@ -1221,6 +1283,17 @@ function renderAdmU(){
    REBUILD DYNAMIC UI
 ═══════════════════════════════ */
 function rebuildUI(){
+  // sidebar sub
+  const allSubs=[...new Set(tasks.map(t=>t.sub).filter(Boolean))].sort();
+  document.getElementById('sb-sub').innerHTML=allSubs.map(s=>`
+    <div class="ni" onclick="setSub('${s.replace(/'/g,"\'")}",this)" title="${s}">
+      <span class="nd" style="background:var(--tx3)"></span>
+      <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:168px;display:block">${s}</span>
+    </div>`).join('');
+  // fsel-sub
+  const fs=document.getElementById('fsel-sub');
+  fs.innerHTML='<option value="">Todas las sub líneas</option>';
+  allSubs.forEach(s=>{fs.innerHTML+=`<option value="${s}">${s}</option>`;});
   // sidebar resp
   document.getElementById('sb-resp').innerHTML=users.map((u,i)=>`
     <div class="ni" onclick="setResp('${u.name}',this)">
@@ -1243,6 +1316,87 @@ function rebuildUI(){
   const mr=document.getElementById('mt-resp');
   mr.innerHTML='<option value="">Seleccionar...</option>';
   users.forEach(u=>{mr.innerHTML+=`<option value="${u.name}">${fmtN(u.name)}</option>`;});
+}
+
+/* ═══════════════════════════════
+   NUEVAS TAREAS (OTRAS TAREAS)
+═══════════════════════════════ */
+let ntRowCount = 0;
+
+function openNuevaTareaMo(){
+  ntRowCount = 0;
+  document.getElementById('nt-rows').innerHTML = '';
+  addNtRow();
+  openMo('mo-nt');
+}
+
+function addNtRow(){
+  ntRowCount++;
+  const id = 'ntr-' + ntRowCount;
+  const respOptions = users.map(u=>`<option value="${u.name}">${fmtN(u.name)}</option>`).join('');
+  const div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = 'border:1px solid var(--bd);border-radius:8px;padding:14px;margin-bottom:10px;display:flex;flex-direction:column;gap:10px;position:relative';
+  div.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+      <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)">Tarea ${ntRowCount}</span>
+      <button onclick="document.getElementById('${id}').remove()" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:16px;line-height:1;padding:0" title="Eliminar fila">&times;</button>
+    </div>
+    <div class="mf"><label>Actividad *</label><input type="text" class="nt-act" placeholder="Descripción de la tarea"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div class="mf"><label>Sub línea</label><input type="text" class="nt-sub" placeholder="Ej: INICIATIVA PROPIA" value="OTRAS TAREAS"></div>
+      <div class="mf"><label>Responsable *</label><select class="nt-resp"><option value="">Seleccionar...</option>${respOptions}</select></div>
+      <div class="mf"><label>Estado inicial</label><select class="nt-est"><option>Planificada</option><option>En curso</option><option>Completada</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mf"><label>Fecha inicio *</label><input type="date" class="nt-ini"></div>
+      <div class="mf"><label>Fecha término *</label><input type="date" class="nt-ter"></div>
+    </div>
+  `;
+  document.getElementById('nt-rows').appendChild(div);
+}
+
+async function saveNuevaTareas(){
+  const rows = document.getElementById('nt-rows').children;
+  const nuevas = [];
+  let errors = 0;
+  for(const row of rows){
+    const act  = row.querySelector('.nt-act')?.value.trim();
+    const sub  = row.querySelector('.nt-sub')?.value.trim() || 'OTRAS TAREAS';
+    const resp = row.querySelector('.nt-resp')?.value;
+    const est  = row.querySelector('.nt-est')?.value || 'Planificada';
+    const ini  = row.querySelector('.nt-ini')?.value;
+    const ter  = row.querySelector('.nt-ter')?.value;
+    if(!act||!resp||!ini||!ter){
+      row.style.borderColor='var(--red)';
+      errors++;
+      continue;
+    }
+    row.style.borderColor='var(--bd)';
+    const nt = {
+      id: nextId++,
+      linea: 'OTRAS TAREAS',
+      sub,
+      actividad: act,
+      responsable: resp,
+      inicio: ini,
+      termino: ter,
+      estado: est,
+      avance: 0, obs: '', motivo: ''
+    };
+    autoStatus(nt);
+    nuevas.push(nt);
+  }
+  if(errors > 0){ toast('Completa los campos obligatorios (*) en rojo','err'); return; }
+  if(nuevas.length === 0){ toast('Agrega al menos una tarea','err'); return; }
+  closeMo('mo-nt');
+  nuevas.forEach(t=>tasks.push(t));
+  // Save each to Sheets
+  setSyncState('busy','Guardando nuevas tareas...');
+  for(const t of nuevas){ await saveTaskToSheets(t); }
+  setSyncState('ok','Guardado');
+  rebuildUI(); render();
+  toast(nuevas.length + ' tarea' + (nuevas.length>1?'s':'') + ' agregada' + (nuevas.length>1?'s':'') + ' correctamente','ok');
 }
 
 /* ═══════════════════════════════
