@@ -1174,7 +1174,7 @@ function render(){
       </td>
       <td class="tfecha">${fmtD(t.inicio)}</td>
       <td class="tfecha">${fmtD(t.termino)}</td>
-      <td style="width:116px">
+      <td style="width:119px">
         <select class="sp ${sc}" onchange="quickStatus(${t.id},this)">
           <option${t.estado==='Planificada'?' selected':''}>Planificada</option>
           <option${t.estado==='En curso'?' selected':''}>En curso</option>
@@ -1183,7 +1183,7 @@ function render(){
           <option${t.estado==='Pausada'?' selected':''}>Pausada</option>
         </select>
       </td>
-      <td style="width:134px">
+      <td style="width:135px">
         <div class="avrow">
           <input class="avinp" type="number" min="0" max="100" value="${t.avance}" onchange="quickAvance(${t.id},this)">
           <div class="bbg"><div class="bf" id="bf-${t.id}" style="width:${t.avance}%;background:${bc}"></div></div>
