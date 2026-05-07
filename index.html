@@ -554,6 +554,18 @@ tbody td{padding:9px 14px;vertical-align:middle}
   </div>
   <div class="content" style="padding-bottom:32px">
     <div class="vac-outer"><div class="vac-scroll"><table class="vac-table" id="vac-table"></table></div></div>
+    <!-- Gráfico de coincidencias -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px;margin-top:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)">Coincidencias de ausencias</div>
+        <div style="display:flex;gap:12px;font-size:11px;color:var(--tx3)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#6BAE9A;display:inline-block"></span>1 persona</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;display:inline-block"></span>2 personas</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#EF4444;display:inline-block"></span>3+ personas</span>
+        </div>
+      </div>
+      <div id="vac-chart" style="width:100%"></div>
+    </div>
     <div class="vac-resumen" id="vac-resumen"></div>
   </div>
 </div>
@@ -1187,7 +1199,7 @@ function goPage(p,el){
   if(el)el.closest('.ni').classList.add('active');
   if(p==='adm')renderAdm();
   if(p==='dash')renderDash();
-  if(p==='vac'){ if(!vacLoaded)loadVac().then(()=>renderVac()); else renderVac(); }
+  if(p==='vac'){ loadVac().then(()=>renderVac()); }
 }
 function goSeguimiento(el){
   CF={linea:'',resp:'',estado:'',sub:''};
@@ -2121,14 +2133,6 @@ async function saveVacDay(responsable, fecha, tipo, nota, remove){
   }
 }
 
-function setVacType(tipo, btn){
-  vacType = tipo;
-  document.querySelectorAll('.vts-btn').forEach(b=>{
-    b.classList.remove('active');
-  });
-  if(btn) btn.classList.add('active');
-}
-
 function vacPrevMonth(){
   vacMonth--;
   if(vacMonth<0){ vacMonth=11; vacYear--; }
@@ -2184,25 +2188,32 @@ function renderVac(){
   const daysInMonth = new Date(vacYear, vacMonth+1, 0).getDate();
   const userList = users.length > 0 ? users : DEF_USERS;
 
+  // Colores sólidos por usuario — uno por columna, bien diferenciados
+  const USER_COL_LIGHT = ['#EEF5FF','#EDFAF3','#F5EEFF','#FFF5EE','#E8FBF5','#FFFBEA'];
+  const USER_COL_MID   = ['#C8DEF8','#AEECD2','#DBC8F5','#F5D8C2','#AADECE','#F5E8A8'];
+  const USER_COL_DARK  = ['#2563EB','#059669','#7C3AED','#EA580C','#0D9488','#CA8A04'];
+
   // ── THEAD ──
   let thead = '<thead><tr>';
   thead += '<th class="vac-th-day">Día</th>';
   userList.forEach((u,i)=>{
-    const rc  = CM[u.color]||CM.blue;
-    const ini = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
-    const hdrBg = COL_HDR[i%COL_HDR.length];
-    const acc   = COL_ACC[i%COL_ACC.length];
-    thead += `<th class="vac-th-user" style="background:${hdrBg};border-bottom:3px solid ${acc}">
+    const ini  = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const light = USER_COL_LIGHT[i%USER_COL_LIGHT.length];
+    const dark  = USER_COL_DARK[i%USER_COL_DARK.length];
+    const mid   = USER_COL_MID[i%USER_COL_MID.length];
+    thead += `<th class="vac-th-user" style="background:${light};border-bottom:3px solid ${dark}">
       <div class="vac-th-inner">
-        <div class="vac-th-av" style="background:${rc.bg};color:${rc.c}">${ini}</div>
-        <div class="vac-th-name">${fmtN(u.name).split(' ').slice(0,2).join(' ')}</div>
+        <div class="vac-th-av" style="background:${mid};color:${dark}">${ini}</div>
+        <div class="vac-th-name" style="color:${dark}">${fmtN(u.name).split(' ')[0]}</div>
       </div>
     </th>`;
   });
   thead += '</tr></thead>';
 
-  // ── TBODY ──
+  // ── TBODY + recolectar datos para gráfico ──
+  const chartData = {}; // { dia: totalAusencias }
   let tbody = '<tbody>';
+
   for(let d=1; d<=daysInMonth; d++){
     const key  = toDateKey(vacYear, vacMonth, d);
     const dow  = new Date(vacYear, vacMonth, d).getDay();
@@ -2210,16 +2221,23 @@ function renderVac(){
     const isF  = isFeriado(key);
     const isT  = key===todayKey;
 
-    let trClass = '';
-    if(isWE)  trClass += ' vac-weekend';
-    if(isF)   trClass += ' vac-feriado';
-    if(isT)   trClass += ' vac-today';
+    // Contar ausencias del día para el gráfico
+    if(!isWE && !isF){
+      let aus = 0;
+      userList.forEach(u=>{ if((vacData[u.name]||{})[key]) aus++; });
+      chartData[d] = aus;
+    }
 
-    tbody += `<tr class="${trClass.trim()}">`;
+    let trCls = [];
+    if(isWE) trCls.push('vac-weekend');
+    if(isF)  trCls.push('vac-feriado');
+    if(isT)  trCls.push('vac-today');
 
-    // Columna día
-    let todayDot = isT ? '<span class="vac-today-dot"></span>' : '';
-    let feriadoTag = isF ? `<span class="vac-ft" title="${FERIADOS_CL[key]}">F</span>` : '';
+    tbody += `<tr class="${trCls.join(' ')}">`;
+
+    // Celda día
+    const todayDot   = isT ? '<span class="vac-today-dot"></span>' : '';
+    const feriadoTag = isF ? `<span class="vac-ft" title="${FERIADOS_CL[key]}">F</span>` : '';
     tbody += `<td class="vac-td-day">
       <div class="vac-day-inner">
         <span class="vac-dn">${d}</span>
@@ -2228,22 +2246,22 @@ function renderVac(){
       </div>
     </td>`;
 
-    // Columnas por usuario
+    // Celdas de usuario — color sólido de columna como inline style
     userList.forEach((u,i)=>{
-      const udata   = (vacData[u.name]||{})[key];
-      const colCls  = `col-${i%6}`;
+      const udata     = (vacData[u.name]||{})[key];
+      const light     = USER_COL_LIGHT[i%USER_COL_LIGHT.length];
+      const dark      = USER_COL_DARK[i%USER_COL_DARK.length];
       const isBlocked = isWE || isF;
+      const bgStyle   = `background:${isBlocked ? (isF?'#F0FBF5':'#F8F8F8') : light}`;
 
       if(isBlocked){
-        // Fin de semana o feriado: no clicable
         let inner = '';
         if(isF && !isWE){
           const fname = FERIADOS_CL[key];
-          inner = `<span style="font-size:9px;color:var(--ac);font-weight:700;opacity:.7">${fname.slice(0,8)}</span>`;
+          inner = `<span style="font-size:9px;color:#059669;font-weight:700;opacity:.7" title="${fname}">${fname.length>10?fname.slice(0,9)+'…':fname}</span>`;
         }
-        tbody += `<td class="vac-td-user ${colCls} vac-nd">${inner}</td>`;
+        tbody += `<td class="vac-td-user vac-nd" style="${bgStyle}">${inner}</td>`;
       } else {
-        // Día hábil
         let inner = '';
         if(udata){
           const tc  = TIPO_CODE[udata.tipo]||'v';
@@ -2251,44 +2269,41 @@ function renderVac(){
           inner = `<div class="vac-block ${tc}"
             title="${VAC_TIPOS_LABEL[udata.tipo]||udata.tipo}"
             onclick="event.stopPropagation();removeVacDay('${u.name}','${key}')">
-            ${lbl}
-            <span class="vac-block-x" title="Eliminar">×</span>
+            ${lbl}<span class="vac-block-x">×</span>
           </div>`;
         }
-        tbody += `<td class="vac-td-user ${colCls}"
+        tbody += `<td class="vac-td-user" style="${bgStyle};${udata?'':'cursor:pointer'}"
           onclick="handleVacClick('${u.name}','${key}')">${inner}</td>`;
       }
     });
-
     tbody += '</tr>';
   }
   tbody += '</tbody>';
-
   document.getElementById('vac-table').innerHTML = thead + tbody;
 
-  // ── RESUMEN ──
+  // ── GRÁFICO SVG de coincidencias ──
+  buildCoincidenceChart(chartData, daysInMonth, userList.length);
+
+  // ── RESUMEN cards ──
   let resumenHTML = '';
   userList.forEach((u,i)=>{
-    const rc      = CM[u.color]||CM.blue;
-    const ini     = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
-    const udata   = vacData[u.name]||{};
-    const acc     = COL_ACC[i%COL_ACC.length];
-    const counts  = {vacaciones:0,permiso:0,enfermedad:0,capacitacion:0};
-    let totalMes  = 0, totalAnio = 0;
+    const ini   = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const dark  = USER_COL_DARK[i%USER_COL_DARK.length];
+    const light = USER_COL_LIGHT[i%USER_COL_LIGHT.length];
+    const mid   = USER_COL_MID[i%USER_COL_MID.length];
+    const udata = vacData[u.name]||{};
+    const counts = {vacaciones:0,permiso:0,enfermedad:0,capacitacion:0};
+    let totalMes=0, totalAnio=0;
 
     Object.entries(udata).forEach(([fecha,v])=>{
       totalAnio++;
-      const prefix = `${vacYear}-${String(vacMonth+1).padStart(2,'0')}`;
-      if(fecha.startsWith(prefix)){
-        counts[v.tipo]=(counts[v.tipo]||0)+1;
-        totalMes++;
-      }
+      const pfx = `${vacYear}-${String(vacMonth+1).padStart(2,'0')}`;
+      if(fecha.startsWith(pfx)){ counts[v.tipo]=(counts[v.tipo]||0)+1; totalMes++; }
     });
 
-    const tiposHTML = Object.entries(counts)
-      .filter(([,n])=>n>0)
+    const tiposHTML = Object.entries(counts).filter(([,n])=>n>0)
       .map(([tipo,n])=>{
-        const tc = TIPO_CODE[tipo]||'v';
+        const tc=TIPO_CODE[tipo]||'v';
         return `<div class="vrc-tipo-row">
           <div class="vrc-tipo-dot" style="background:${TIPO_BG[tc]}"></div>
           <span class="vrc-tipo-name">${VAC_TIPOS_LABEL[tipo]}</span>
@@ -2296,15 +2311,15 @@ function renderVac(){
         </div>`;
       }).join('') || `<div style="font-size:12px;color:var(--tx3)">Sin ausencias este mes</div>`;
 
-    resumenHTML += `<div class="vac-res-card" style="border-top-color:${acc}">
+    resumenHTML += `<div class="vac-res-card" style="border-top-color:${dark};background:${light}">
       <div class="vrc-top">
-        <div class="vac-summary-av" style="background:${rc.bg};color:${rc.c}">${ini}</div>
+        <div class="vac-summary-av" style="background:${mid};color:${dark}">${ini}</div>
         <div style="flex:1">
           <div class="vrc-name">${fmtN(u.name).split(' ').slice(0,2).join(' ')}</div>
           <div style="font-size:11px;color:var(--tx3)">${totalAnio} días en el año</div>
         </div>
         <div style="text-align:right">
-          <div class="vrc-total">${totalMes}</div>
+          <div class="vrc-total" style="color:${dark}">${totalMes}</div>
           <div class="vrc-label">este mes</div>
         </div>
       </div>
@@ -2313,6 +2328,61 @@ function renderVac(){
   });
   document.getElementById('vac-resumen').innerHTML = resumenHTML;
 }
+
+function buildCoincidenceChart(chartData, daysInMonth, maxUsers){
+  const wrap = document.getElementById('vac-chart');
+  if(!wrap) return;
+
+  const W=wrap.clientWidth||700, H=90;
+  const padL=36, padR=12, padT=8, padB=24;
+  const innerW=W-padL-padR, innerH=H-padT-padB;
+  const barW=Math.max(2, Math.floor(innerW/daysInMonth)-2);
+  const maxVal=Math.max(1, maxUsers);
+
+  // Color de barra según cantidad
+  function barColor(n){
+    if(n===0)return'#E2E0D8';
+    if(n===1)return'#6BAE9A';
+    if(n===2)return'#F59E0B';
+    return'#EF4444';
+  }
+
+  let bars='', labels='', yLines='';
+  // Líneas Y
+  for(let v=0;v<=maxVal;v++){
+    const y=padT+innerH-(v/maxVal*innerH);
+    yLines+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#E2E0D8" stroke-width="1"/>`;
+    if(v>0)yLines+=`<text x="${padL-4}" y="${y+4}" text-anchor="end" font-size="9" fill="#9E9C96">${v}</text>`;
+  }
+  // Barras
+  for(let d=1;d<=daysInMonth;d++){
+    const n=chartData[d]||0;
+    const x=padL+(d-1)*(innerW/daysInMonth)+(innerW/daysInMonth-barW)/2;
+    const bH=n>0?Math.max(4,(n/maxVal)*innerH):2;
+    const y=padT+innerH-bH;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW}" height="${bH.toFixed(1)}"
+      rx="2" fill="${barColor(n)}" opacity="${n>0?1:.4}">
+      <title>Día ${d}: ${n} ausencia${n!==1?'s':''}</title></rect>`;
+    // Etiqueta día (cada 5)
+    if(d===1||d%5===0||d===daysInMonth){
+      const lx=x+barW/2;
+      labels+=`<text x="${lx.toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="9" fill="#9E9C96">${d}</text>`;
+    }
+  }
+  // Leyenda
+  const leyenda=`
+    <circle cx="${padL+4}" cy="${H-42}" r="4" fill="#6BAE9A"/>
+    <text x="${padL+11}" y="${H-38}" font-size="9" fill="#6B6860">1 ausente</text>
+    <circle cx="${padL+70}" cy="${H-42}" r="4" fill="#F59E0B"/>
+    <text x="${padL+77}" y="${H-38}" font-size="9" fill="#6B6860">2 ausentes</text>
+    <circle cx="${padL+144}" cy="${H-42}" r="4" fill="#EF4444"/>
+    <text x="${padL+151}" y="${H-38}" font-size="9" fill="#6B6860">3+ ausentes</text>`;
+
+  wrap.innerHTML=`<svg width="${W}" height="${H}" style="display:block">
+    ${yLines}${bars}${labels}
+  </svg>`;
+}
+
 
 async function handleVacClick(responsable, fecha){
   if(!vacData[responsable]) vacData[responsable]={};
