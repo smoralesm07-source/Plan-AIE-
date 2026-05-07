@@ -321,6 +321,59 @@ tbody td{padding:9px 14px;vertical-align:middle}
 .tl-act{font-size:12px;font-weight:500;line-height:1.3}
 .tl-resp{font-size:11px;color:var(--tx3);margin-top:1px}
 
+/* ── VACACIONES ── */
+.vac-topbar-sel{display:flex;align-items:center;gap:10px}
+.vac-nav-btn{width:32px;height:32px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--s2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .13s;color:var(--tx2)}
+.vac-nav-btn:hover{border-color:var(--ac);color:var(--ac);background:var(--al)}
+.vac-month-label{font-size:15px;font-weight:600;min-width:160px;text-align:center;color:var(--tx)}
+.vac-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.vleg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)}
+.vleg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.vac-grid-wrap{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.vac-user-header{display:grid;background:var(--bg);border-bottom:1px solid var(--bd)}
+.vac-user-cell{padding:11px 14px;font-size:12px;font-weight:600;color:var(--tx2);border-right:1px solid var(--bd);display:flex;align-items:center;gap:8px}
+.vac-user-cell:last-child{border-right:none}
+.vac-cal-row{display:grid;border-bottom:1px solid var(--bd)}
+.vac-cal-row:last-child{border-bottom:none}
+.vac-day-label{padding:0 14px;display:flex;align-items:center;gap:8px;border-right:1px solid var(--bd);min-height:38px;background:var(--bg)}
+.vac-day-num{font-size:13px;font-weight:500;color:var(--tx);min-width:22px}
+.vac-day-name{font-size:11px;color:var(--tx3)}
+.vac-day-label.weekend .vac-day-num,.vac-day-label.weekend .vac-day-name{color:var(--tx3);opacity:.55}
+.vac-day-label.feriado .vac-day-num{color:var(--ac);font-weight:700}
+.vac-day-label.feriado .vac-day-name{color:var(--ac)}
+.vac-day-label.today .vac-day-num{background:var(--tx);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.vac-cell{border-right:1px solid var(--bd);min-height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s;position:relative}
+.vac-cell:last-child{border-right:none}
+.vac-cell:hover{background:#F0F7F3}
+.vac-cell.weekend{background:#FAFAF8;cursor:default}
+.vac-cell.weekend:hover{background:#FAFAF8}
+.vac-cell.feriado{background:#F0F9F4;cursor:default}
+.vac-cell.feriado:hover{background:#F0F9F4}
+.vac-chip{width:calc(100% - 8px);height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:filter .13s;position:relative}
+.vac-chip:hover{filter:brightness(.92)}
+.vac-chip.vacaciones{background:#DBEEFF;color:#1E3A5F}
+.vac-chip.permiso{background:#FFF3CD;color:#856404}
+.vac-chip.enfermedad{background:#FFE8E8;color:#8B2A2A}
+.vac-chip.capacitacion{background:var(--al);color:var(--a2)}
+.vac-cell .feriado-tag{font-size:9px;color:var(--ac);font-weight:600;opacity:.7;text-align:center;padding:2px 4px;line-height:1.2}
+.vac-summary{display:grid;margin-top:16px;gap:12px}
+.vac-summary-row{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:16px;box-shadow:var(--sh)}
+.vac-summary-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.vac-summary-info{flex:1}
+.vac-summary-name{font-size:13px;font-weight:500}
+.vac-summary-days{font-size:12px;color:var(--tx3);margin-top:1px}
+.vac-summary-chips{display:flex;gap:6px;flex-wrap:wrap}
+.vsbc{font-size:11px;padding:3px 8px;border-radius:5px;font-weight:500}
+.vac-type-sel{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.vts-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);font-size:12px;font-weight:500;cursor:pointer;transition:all .13s;color:var(--tx2)}
+.vts-btn:hover{border-color:var(--bd2)}
+.vts-btn.active{border-color:transparent;color:#fff}
+.vts-btn.vacaciones.active{background:#378ADD}
+.vts-btn.permiso.active{background:#856404}
+.vts-btn.enfermedad.active{background:var(--red)}
+.vts-btn.capacitacion.active{background:var(--ac)}
+.feriado-badge{font-size:9px;font-weight:700;color:var(--ac);letter-spacing:.04em;text-transform:uppercase;opacity:.8}
+
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
@@ -406,6 +459,11 @@ tbody td{padding:9px 14px;vertical-align:middle}
     <div id="sb-resp"></div>
     <div class="sb-sec">Por sub línea</div>
     <div id="sb-sub"></div>
+    <div class="sb-sec">Herramientas</div>
+    <div class="ni" id="nav-vac" onclick="goPage('vac',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      Vacaciones
+    </div>
     <div class="sb-sec">Administración</div>
     <div class="ni" id="nav-adm" onclick="goPage('adm',this)">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -416,6 +474,45 @@ tbody td{padding:9px 14px;vertical-align:middle}
 </aside>
 
 <main class="main">
+
+<!-- PAGE: VACACIONES -->
+<div class="page" id="page-vac">
+  <div class="topbar" style="flex-wrap:wrap;gap:12px">
+    <div class="tb-info">
+      <div class="tb-title">Control de Ausencias</div>
+      <div class="tb-sub">Haz clic en un día para marcar o desmarcar · datos en Google Sheets</div>
+    </div>
+    <div class="vac-topbar-sel">
+      <button class="vac-nav-btn" onclick="vacPrevMonth()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="vac-month-label" id="vac-month-label">—</div>
+      <button class="vac-nav-btn" onclick="vacNextMonth()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <div class="vac-legend">
+      <div class="vleg"><div class="vleg-dot" style="background:#DBEEFF"></div>Vacaciones</div>
+      <div class="vleg"><div class="vleg-dot" style="background:#FFF3CD"></div>Permiso</div>
+      <div class="vleg"><div class="vleg-dot" style="background:#FFE8E8"></div>Enfermedad</div>
+      <div class="vleg"><div class="vleg-dot" style="background:var(--al)"></div>Capacitación</div>
+      <div class="vleg"><div class="vleg-dot" style="background:#E8F5EE;border:1px solid var(--ac)"></div>Feriado</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;color:var(--tx3)">Tipo:</span>
+      <div class="vac-type-sel" id="vac-type-sel">
+        <button class="vts-btn vacaciones active" onclick="setVacType('vacaciones',this)">Vacaciones</button>
+        <button class="vts-btn permiso" onclick="setVacType('permiso',this)">Permiso</button>
+        <button class="vts-btn enfermedad" onclick="setVacType('enfermedad',this)">Enfermedad</button>
+        <button class="vts-btn capacitacion" onclick="setVacType('capacitacion',this)">Capacitación</button>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="vac-grid-wrap" id="vac-grid"></div>
+    <div class="vac-summary" id="vac-summary" style="grid-template-columns:1fr 1fr"></div>
+  </div>
+</div>
 
 <!-- PAGE: RESUMEN GERENCIAL -->
 <div class="page" id="page-dash">
@@ -1003,7 +1100,7 @@ function launchApp(){
   banner.style.display='flex';
   document.getElementById('sname').textContent='Google Sheets · Plan Trabajo UAF 2026';
   document.getElementById('app').style.display='block';
-  loadFromSheets().then(()=>{rebuildUI();render();renderDash();});
+  loadFromSheets().then(()=>{ rebuildUI();render();renderDash(); loadVac(); });
 }
 
 async function forceSync(){
@@ -1030,6 +1127,7 @@ function goPage(p,el){
   if(el)el.closest('.ni').classList.add('active');
   if(p==='adm')renderAdm();
   if(p==='dash')renderDash();
+  if(p==='vac'){ if(!vacLoaded)loadVac().then(()=>renderVac()); else renderVac(); }
 }
 function goSeguimiento(el){
   CF={linea:'',resp:'',estado:'',sub:''};
@@ -1174,7 +1272,7 @@ function render(){
       </td>
       <td class="tfecha">${fmtD(t.inicio)}</td>
       <td class="tfecha">${fmtD(t.termino)}</td>
-      <td style="width:122px">
+      <td style="width:116px">
         <select class="sp ${sc}" onchange="quickStatus(${t.id},this)">
           <option${t.estado==='Planificada'?' selected':''}>Planificada</option>
           <option${t.estado==='En curso'?' selected':''}>En curso</option>
@@ -1183,7 +1281,7 @@ function render(){
           <option${t.estado==='Pausada'?' selected':''}>Pausada</option>
         </select>
       </td>
-      <td style="width:145px">
+      <td style="width:132px">
         <div class="avrow">
           <input class="avinp" type="number" min="0" max="100" value="${t.avance}" onchange="quickAvance(${t.id},this)">
           <div class="bbg"><div class="bf" id="bf-${t.id}" style="width:${t.avance}%;background:${bc}"></div></div>
@@ -1838,6 +1936,264 @@ function printDash(){
 }
 
 /* ═══════════════════════════════
+   VACACIONES — CALENDARIO
+═══════════════════════════════ */
+
+// Feriados legales Chile 2025 y 2026 (fecha YYYY-MM-DD : nombre)
+const FERIADOS_CL = {
+  // 2025
+  '2025-01-01':'Año Nuevo',
+  '2025-04-18':'Viernes Santo',
+  '2025-04-19':'Sábado Santo',
+  '2025-05-01':'Día del Trabajo',
+  '2025-05-21':'Glorias Navales',
+  '2025-06-20':'Día Nacional Pueblos Indígenas',
+  '2025-06-29':'San Pedro y San Pablo',
+  '2025-07-16':'Virgen del Carmen',
+  '2025-08-15':'Asunción de la Virgen',
+  '2025-09-18':'Independencia Nacional',
+  '2025-09-19':'Glorias del Ejército',
+  '2025-10-12':'Encuentro Dos Mundos',
+  '2025-10-31':'Día de las Iglesias Evangélicas',
+  '2025-11-01':'Día de Todos los Santos',
+  '2025-12-08':'Inmaculada Concepción',
+  '2025-12-25':'Navidad',
+  '2025-12-31':'Feriado Bancario',
+  // 2026
+  '2026-01-01':'Año Nuevo',
+  '2026-04-03':'Viernes Santo',
+  '2026-04-04':'Sábado Santo',
+  '2026-05-01':'Día del Trabajo',
+  '2026-05-21':'Glorias Navales',
+  '2026-06-21':'Día Nacional Pueblos Indígenas',
+  '2026-06-29':'San Pedro y San Pablo',
+  '2026-07-16':'Virgen del Carmen',
+  '2026-08-15':'Asunción de la Virgen',
+  '2026-09-18':'Independencia Nacional',
+  '2026-09-19':'Glorias del Ejército',
+  '2026-10-12':'Encuentro Dos Mundos',
+  '2026-10-31':'Día de las Iglesias Evangélicas',
+  '2026-11-01':'Día de Todos los Santos',
+  '2026-12-08':'Inmaculada Concepción',
+  '2026-12-25':'Navidad',
+  '2026-12-31':'Feriado Bancario',
+};
+
+const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const VAC_TIPOS_LABEL = {
+  vacaciones:'Vacaciones', permiso:'Permiso',
+  enfermedad:'Enfermedad', capacitacion:'Capacitación'
+};
+const VAC_CHIP_COLORS = {
+  vacaciones:{bg:'#DBEEFF',c:'#1E3A5F'},
+  permiso:{bg:'#FFF3CD',c:'#856404'},
+  enfermedad:{bg:'#FFE8E8',c:'#8B2A2A'},
+  capacitacion:{bg:'#EBF3EE',c:'#1E3D2E'},
+};
+
+let vacData = {};        // { 'RESPONSABLE': { 'YYYY-MM-DD': {tipo,nota} } }
+let vacYear  = new Date().getFullYear();
+let vacMonth = new Date().getMonth(); // 0-based
+let vacType  = 'vacaciones';
+let vacLoaded = false;
+
+function toDateKey(y,m,d){
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+function isFeriado(key){ return !!FERIADOS_CL[key]; }
+function isWeekend(y,m,d){ const dow=new Date(y,m,d).getDay(); return dow===0||dow===6; }
+
+// Carga vacaciones desde Sheets
+async function loadVac(){
+  try{
+    const res = await sheetsFetch({action:'readVac'});
+    vacData = {};
+    (res.vacaciones||[]).forEach(v=>{
+      if(!vacData[v.responsable]) vacData[v.responsable]={};
+      vacData[v.responsable][v.fecha]={tipo:v.tipo||'vacaciones',nota:v.nota||''};
+    });
+    vacLoaded = true;
+  }catch(e){
+    toast('Error al cargar vacaciones: '+e.message,'err');
+  }
+}
+
+// Guarda/elimina un día en Sheets
+async function saveVacDay(responsable, fecha, tipo, nota, remove){
+  try{
+    if(remove){
+      await sheetsFetch({action:'deleteVac'},{responsable,fecha});
+    } else {
+      await sheetsFetch({action:'setVac'},{responsable,fecha,tipo,nota:nota||''});
+    }
+  }catch(e){
+    toast('Error al guardar: '+e.message,'err');
+  }
+}
+
+function setVacType(tipo, btn){
+  vacType = tipo;
+  document.querySelectorAll('.vts-btn').forEach(b=>{
+    b.classList.remove('active');
+  });
+  if(btn) btn.classList.add('active');
+}
+
+function vacPrevMonth(){
+  vacMonth--;
+  if(vacMonth<0){ vacMonth=11; vacYear--; }
+  renderVac();
+}
+function vacNextMonth(){
+  vacMonth++;
+  if(vacMonth>11){ vacMonth=0; vacYear++; }
+  renderVac();
+}
+
+// Click en celda: toggle día para un responsable
+async function toggleVacDay(responsable, fecha){
+  if(isWeekend(...fecha.split('-').map((v,i)=>i===1?v-1:Number(v)))||isFeriado(fecha)) return;
+  if(!vacData[responsable]) vacData[responsable]={};
+  const existing = vacData[responsable][fecha];
+  if(existing && existing.tipo===vacType){
+    // Quitar
+    delete vacData[responsable][fecha];
+    await saveVacDay(responsable, fecha, null, null, true);
+    toast('Día eliminado','ok');
+  } else {
+    // Marcar o cambiar tipo
+    vacData[responsable][fecha]={tipo:vacType,nota:''};
+    await saveVacDay(responsable, fecha, vacType, '', false);
+    toast(VAC_TIPOS_LABEL[vacType]+' marcado','ok');
+  }
+  renderVac();
+}
+
+function renderVac(){
+  document.getElementById('vac-month-label').textContent =
+    MESES_ES[vacMonth]+' '+vacYear;
+
+  const today = new Date();
+  const todayKey = toDateKey(today.getFullYear(), today.getMonth(), today.getDate());
+
+  // Días del mes
+  const daysInMonth = new Date(vacYear, vacMonth+1, 0).getDate();
+
+  // Usuarios activos
+  const userList = users.length > 0 ? users : DEF_USERS;
+
+  // ── Cabecera de usuarios ──
+  const colW = `${Math.floor(100/(userList.length+1))}%`;
+  const gridCols = `140px repeat(${userList.length}, 1fr)`;
+
+  let headerHTML = `<div class="vac-user-header" style="grid-template-columns:${gridCols}">`;
+  headerHTML += `<div class="vac-user-cell" style="background:var(--bg)"><span style="font-size:11px;color:var(--tx3)">Día</span></div>`;
+  userList.forEach(u=>{
+    const rc = CM[u.color]||CM.blue;
+    const ini = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    headerHTML += `<div class="vac-user-cell">
+      <div class="rav" style="width:24px;height:24px;font-size:9px;background:${rc.bg};color:${rc.c}">${ini}</div>
+      <span>${fmtN(u.name).split(' ')[0]}</span>
+    </div>`;
+  });
+  headerHTML += '</div>';
+
+  // ── Filas de días ──
+  let rowsHTML = '';
+  for(let d=1; d<=daysInMonth; d++){
+    const key = toDateKey(vacYear, vacMonth, d);
+    const dow = new Date(vacYear, vacMonth, d).getDay();
+    const isWE = dow===0||dow===6;
+    const isF  = isFeriado(key);
+    const isT  = key===todayKey;
+
+    let dayClass = 'vac-day-label';
+    if(isWE) dayClass+=' weekend';
+    if(isF)  dayClass+=' feriado';
+    if(isT)  dayClass+=' today';
+
+    let rowClass = 'vac-cal-row';
+    if(isWE) rowClass+=' weekend-row';
+
+    rowsHTML += `<div class="${rowClass}" style="grid-template-columns:${gridCols};${isWE?'opacity:.55':''}">`;
+    rowsHTML += `<div class="${dayClass}">
+      <span class="vac-day-num">${d}</span>
+      <span class="vac-day-name">${DIAS_ES[dow]}</span>
+      ${isF?`<span class="feriado-badge" title="${FERIADOS_CL[key]}">F</span>`:''}
+    </div>`;
+
+    userList.forEach(u=>{
+      const udata = (vacData[u.name]||{})[key];
+      let cellClass = 'vac-cell';
+      if(isWE) cellClass+=' weekend';
+      if(isF)  cellClass+=' feriado';
+
+      let cellContent = '';
+      if(isF && !isWE){
+        const fname = FERIADOS_CL[key];
+        const short = fname.length>12 ? fname.slice(0,11)+'…' : fname;
+        cellContent = `<span class="feriado-tag" title="${fname}">${short}</span>`;
+      } else if(!isWE && udata){
+        const col = VAC_CHIP_COLORS[udata.tipo]||VAC_CHIP_COLORS.vacaciones;
+        const lbl = VAC_TIPOS_LABEL[udata.tipo]||udata.tipo;
+        cellContent = `<div class="vac-chip ${udata.tipo}"
+          title="${lbl}${udata.nota?' · '+udata.nota:''}"
+          onclick="event.stopPropagation();toggleVacDay('${u.name}','${key}')">
+          <span style="font-size:9px">${lbl.slice(0,3).toUpperCase()}</span>
+        </div>`;
+      }
+
+      const clickHandler = (!isWE&&!isF)
+        ? `onclick="toggleVacDay('${u.name}','${key}')"` : '';
+      rowsHTML += `<div class="${cellClass}" ${clickHandler}>${cellContent}</div>`;
+    });
+    rowsHTML += '</div>';
+  }
+
+  document.getElementById('vac-grid').innerHTML = headerHTML + rowsHTML;
+
+  // ── Resumen mensual ──
+  let summaryHTML = '';
+  userList.forEach(u=>{
+    const udata = vacData[u.name]||{};
+    const rc = CM[u.color]||CM.blue;
+    const ini = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+
+    // Contar días del mes visible
+    const counts = {vacaciones:0,permiso:0,enfermedad:0,capacitacion:0};
+    let total=0;
+    Object.entries(udata).forEach(([fecha,v])=>{
+      if(fecha.startsWith(`${vacYear}-${String(vacMonth+1).padStart(2,'0')}`)){
+        counts[v.tipo]=(counts[v.tipo]||0)+1;
+        total++;
+      }
+    });
+
+    const chips = Object.entries(counts)
+      .filter(([,n])=>n>0)
+      .map(([tipo,n])=>{
+        const col=VAC_CHIP_COLORS[tipo]||VAC_CHIP_COLORS.vacaciones;
+        return `<span class="vsbc" style="background:${col.bg};color:${col.c}">${n} ${VAC_TIPOS_LABEL[tipo].toLowerCase()}</span>`;
+      }).join('');
+
+    // Total año completo
+    const totalAnio = Object.values(vacData[u.name]||{}).length;
+
+    summaryHTML += `<div class="vac-summary-row">
+      <div class="vac-summary-av" style="background:${rc.bg};color:${rc.c}">${ini}</div>
+      <div class="vac-summary-info">
+        <div class="vac-summary-name">${fmtN(u.name)}</div>
+        <div class="vac-summary-days">${total>0?total+' día'+(total!==1?'s':'')+' este mes':'Sin ausencias este mes'} · ${totalAnio} registrado${totalAnio!==1?'s':''} en el año</div>
+      </div>
+      <div class="vac-summary-chips">${chips||'<span style="font-size:12px;color:var(--tx3)">Sin registros</span>'}</div>
+    </div>`;
+  });
+  document.getElementById('vac-summary').innerHTML = summaryHTML;
+}
+
+/* ═══════════════════════════════
    EXPORT
 ═══════════════════════════════ */
 function exportCSV(){
@@ -1893,7 +2249,7 @@ document.getElementById('fsel-resp').addEventListener('change',()=>{CF.resp='';r
   // Pega aquí tu Google Client ID después de registrar la app en
   // Google Cloud Console (APIs & Services → Credentials → OAuth 2.0)
   // Formato: "xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
-  const GOOGLE_CLIENT_ID_CONFIG = '945821204702-t0s8nf6u1m5j09u11iutanuebpica0s6.apps.googleusercontent.com';
+  const GOOGLE_CLIENT_ID_CONFIG = '';
   // ───────────────────────────────────────────────────────────────
 
   // Check cached user session
