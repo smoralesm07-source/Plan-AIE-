@@ -503,7 +503,7 @@ tbody td{padding:9px 14px;vertical-align:middle}
     <div class="sb-sec">Herramientas</div>
     <div class="ni" id="nav-vac" onclick="goPage('vac',this)">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-      Vacaciones
+      Ausencias programadas
     </div>
     <div class="sb-sec">Administración</div>
     <div class="ni" id="nav-adm" onclick="goPage('adm',this)">
@@ -520,7 +520,7 @@ tbody td{padding:9px 14px;vertical-align:middle}
 <div class="page" id="page-vac">
   <div class="topbar" style="flex-wrap:wrap;gap:12px">
     <div class="tb-info">
-      <div class="tb-title">Control de Ausencias</div>
+      <div class="tb-title">Ausencias programadas</div>
       <div class="tb-sub">Selecciona tipo → haz clic en los días del calendario</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
@@ -554,17 +554,19 @@ tbody td{padding:9px 14px;vertical-align:middle}
   </div>
   <div class="content" style="padding-bottom:32px">
     <div class="vac-outer"><div class="vac-scroll"><table class="vac-table" id="vac-table"></table></div></div>
-    <!-- Gráfico de coincidencias -->
-    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px;margin-top:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)">Coincidencias de ausencias</div>
-        <div style="display:flex;gap:12px;font-size:11px;color:var(--tx3)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#6BAE9A;display:inline-block"></span>1 persona</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;display:inline-block"></span>2 personas</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#EF4444;display:inline-block"></span>3+ personas</span>
+    <!-- Matriz de ausencias -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:16px 18px;margin-top:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)">Vista de ausencias por usuario</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2)"><span style="width:14px;height:14px;border-radius:3px;background:#DBEEFF;border:1px solid #C8DEF8;display:inline-block"></span>Vacaciones</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2)"><span style="width:14px;height:14px;border-radius:3px;background:#FFF3CD;border:1px solid #F5E8A8;display:inline-block"></span>Permiso</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2)"><span style="width:14px;height:14px;border-radius:3px;background:#FFE8E8;border:1px solid #F5C8C8;display:inline-block"></span>Enfermedad</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2)"><span style="width:14px;height:14px;border-radius:3px;background:#EBF3EE;border:1px solid #AEECD2;display:inline-block"></span>Capacitación</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2)"><span style="width:14px;height:14px;border-radius:3px;background:#F0FBF5;border:1px solid #A8D8C0;display:inline-block"></span>Feriado</span>
         </div>
       </div>
-      <div id="vac-chart" style="width:100%"></div>
+      <div id="vac-chart" style="width:100%;overflow-x:auto"></div>
     </div>
     <div class="vac-resumen" id="vac-resumen"></div>
   </div>
@@ -2282,7 +2284,7 @@ function renderVac(){
   document.getElementById('vac-table').innerHTML = thead + tbody;
 
   // ── GRÁFICO SVG de coincidencias ──
-  buildCoincidenceChart(chartData, daysInMonth, userList.length);
+  buildHeatmap(vacData, userList, vacYear, vacMonth, daysInMonth);
 
   // ── RESUMEN cards ──
   let resumenHTML = '';
@@ -2329,57 +2331,148 @@ function renderVac(){
   document.getElementById('vac-resumen').innerHTML = resumenHTML;
 }
 
-function buildCoincidenceChart(chartData, daysInMonth, maxUsers){
+function buildHeatmap(vacData, userList, year, month, daysInMonth){
   const wrap = document.getElementById('vac-chart');
   if(!wrap) return;
 
-  const W=wrap.clientWidth||700, H=90;
-  const padL=36, padR=12, padT=8, padB=24;
-  const innerW=W-padL-padR, innerH=H-padT-padB;
-  const barW=Math.max(2, Math.floor(innerW/daysInMonth)-2);
-  const maxVal=Math.max(1, maxUsers);
+  const TIPO_FILL = {
+    vacaciones: {bg:'#DBEEFF', border:'#8BBDE8', text:'#1E3A5F'},
+    permiso:    {bg:'#FFF3CD', border:'#E8C97A', text:'#856404'},
+    enfermedad: {bg:'#FFE8E8', border:'#E8A8A8', text:'#8B2A2A'},
+    capacitacion:{bg:'#EBF3EE', border:'#7EC8A0', text:'#1E3D2E'},
+    feriado:    {bg:'#F0FBF5', border:'#A8D8C0', text:'#059669'},
+  };
+  const USER_COL_DARK  = ['#2563EB','#059669','#7C3AED','#EA580C','#0D9488','#CA8A04'];
 
-  // Color de barra según cantidad
-  function barColor(n){
-    if(n===0)return'#E2E0D8';
-    if(n===1)return'#6BAE9A';
-    if(n===2)return'#F59E0B';
-    return'#EF4444';
-  }
+  const nUsers   = userList.length;
+  const rowH     = 36;          // altura de cada fila de usuario
+  const labelW   = 110;         // ancho columna nombres
+  const dayW     = 28;          // ancho de cada celda de día
+  const headerH  = 28;          // altura cabecera de días
+  const padB     = 8;
 
-  let bars='', labels='', yLines='';
-  // Líneas Y
-  for(let v=0;v<=maxVal;v++){
-    const y=padT+innerH-(v/maxVal*innerH);
-    yLines+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#E2E0D8" stroke-width="1"/>`;
-    if(v>0)yLines+=`<text x="${padL-4}" y="${y+4}" text-anchor="end" font-size="9" fill="#9E9C96">${v}</text>`;
-  }
-  // Barras
-  for(let d=1;d<=daysInMonth;d++){
-    const n=chartData[d]||0;
-    const x=padL+(d-1)*(innerW/daysInMonth)+(innerW/daysInMonth-barW)/2;
-    const bH=n>0?Math.max(4,(n/maxVal)*innerH):2;
-    const y=padT+innerH-bH;
-    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW}" height="${bH.toFixed(1)}"
-      rx="2" fill="${barColor(n)}" opacity="${n>0?1:.4}">
-      <title>Día ${d}: ${n} ausencia${n!==1?'s':''}</title></rect>`;
-    // Etiqueta día (cada 5)
-    if(d===1||d%5===0||d===daysInMonth){
-      const lx=x+barW/2;
-      labels+=`<text x="${lx.toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="9" fill="#9E9C96">${d}</text>`;
+  const totalW   = labelW + daysInMonth * dayW;
+  const totalH   = headerH + nUsers * rowH + padB;
+
+  // ── Cabecera de días ──
+  let header = '';
+  const today = new Date();
+  for(let d=1; d<=daysInMonth; d++){
+    const x   = labelW + (d-1)*dayW;
+    const dow = new Date(year, month, d).getDay();
+    const isWE = dow===0||dow===6;
+    const key  = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isF  = !!FERIADOS_CL[key];
+    const isT  = (d===today.getDate() && month===today.getMonth() && year===today.getFullYear());
+    const bgH  = isWE ? '#F4F3EF' : isF ? '#F0FBF5' : '#FAFAF8';
+    const txH  = isWE ? '#C8C6BC' : isF ? '#059669' : '#9E9C96';
+    const fw   = isT ? 'bold' : 'normal';
+    const txColor = isT ? '#1A1916' : txH;
+
+    header += `<rect x="${x}" y="0" width="${dayW}" height="${headerH}" fill="${bgH}" stroke="#E2E0D8" stroke-width="0.5"/>`;
+    if(isT){
+      // Círculo para hoy
+      header += `<circle cx="${x+dayW/2}" cy="${headerH/2}" r="10" fill="#1A1916"/>`;
+      header += `<text x="${x+dayW/2}" y="${headerH/2+4}" text-anchor="middle" font-size="10" font-weight="bold" fill="white">${d}</text>`;
+    } else {
+      header += `<text x="${x+dayW/2}" y="${headerH/2+4}" text-anchor="middle" font-size="10" font-weight="${fw}" fill="${txColor}">${d}</text>`;
+    }
+    // Nombre día abreviado (solo Lun, Mié, Vie para no saturar)
+    if(dow===1||dow===3||dow===5){
+      header += `<text x="${x+dayW/2}" y="${headerH-3}" text-anchor="middle" font-size="7" fill="#C8C6BC">${['D','L','M','X','J','V','S'][dow]}</text>`;
     }
   }
-  // Leyenda
-  const leyenda=`
-    <circle cx="${padL+4}" cy="${H-42}" r="4" fill="#6BAE9A"/>
-    <text x="${padL+11}" y="${H-38}" font-size="9" fill="#6B6860">1 ausente</text>
-    <circle cx="${padL+70}" cy="${H-42}" r="4" fill="#F59E0B"/>
-    <text x="${padL+77}" y="${H-38}" font-size="9" fill="#6B6860">2 ausentes</text>
-    <circle cx="${padL+144}" cy="${H-42}" r="4" fill="#EF4444"/>
-    <text x="${padL+151}" y="${H-38}" font-size="9" fill="#6B6860">3+ ausentes</text>`;
 
-  wrap.innerHTML=`<svg width="${W}" height="${H}" style="display:block">
-    ${yLines}${bars}${labels}
+  // ── Filas de usuarios ──
+  let rows = '', gridLines = '';
+
+  // Líneas verticales de fin de semana (fondo)
+  for(let d=1; d<=daysInMonth; d++){
+    const dow = new Date(year, month, d).getDay();
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isWE = dow===0||dow===6;
+    const isF  = !!FERIADOS_CL[key];
+    if(isWE||isF){
+      const x = labelW + (d-1)*dayW;
+      const bg = isF ? 'rgba(5,150,105,.06)' : 'rgba(0,0,0,.03)';
+      gridLines += `<rect x="${x}" y="${headerH}" width="${dayW}" height="${nUsers*rowH}" fill="${bg}"/>`;
+    }
+  }
+
+  userList.forEach((u, ui)=>{
+    const y     = headerH + ui * rowH;
+    const dark  = USER_COL_DARK[ui % USER_COL_DARK.length];
+    const ini   = u.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const fname = fmtN(u.name).split(' ').slice(0,2).join(' ');
+    const isLastRow = ui === nUsers-1;
+
+    // Fondo alternado de fila
+    const rowBg = ui%2===0 ? '#FFFFFF' : '#FAFAF8';
+    rows += `<rect x="0" y="${y}" width="${totalW}" height="${rowH}" fill="${rowBg}"/>`;
+
+    // Línea separadora
+    if(!isLastRow){
+      rows += `<line x1="0" y1="${y+rowH}" x2="${totalW}" y2="${y+rowH}" stroke="#E2E0D8" stroke-width="0.5"/>`;
+    }
+
+    // Avatar círculo
+    rows += `<circle cx="18" cy="${y+rowH/2}" r="13" fill="${dark}15" stroke="${dark}" stroke-width="1.5"/>`;
+    rows += `<text x="18" y="${y+rowH/2+4}" text-anchor="middle" font-size="10" font-weight="bold" fill="${dark}">${ini}</text>`;
+    // Nombre
+    rows += `<text x="38" y="${y+rowH/2+4}" font-size="11" fill="#1A1916" font-weight="500">${fname}</text>`;
+
+    // Celdas de días
+    const udata = vacData[u.name]||{};
+    for(let d=1; d<=daysInMonth; d++){
+      const key  = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dow  = new Date(year, month, d).getDay();
+      const isWE = dow===0||dow===6;
+      const isF  = !!FERIADOS_CL[key];
+      const cx   = labelW + (d-1)*dayW;
+      const cy   = y;
+      const pad  = 2;
+
+      if(isF && !isWE){
+        // Feriado: celda verde muy suave
+        rows += `<rect x="${cx+pad}" y="${cy+pad}" width="${dayW-pad*2}" height="${rowH-pad*2}"
+          rx="3" fill="#F0FBF5" stroke="#A8D8C0" stroke-width="0.8">
+          <title>Feriado: ${FERIADOS_CL[key]}</title></rect>`;
+      } else if(!isWE && udata[key]){
+        const tipo = udata[key].tipo||'vacaciones';
+        const col  = TIPO_FILL[tipo]||TIPO_FILL.vacaciones;
+        const code = {vacaciones:'V',permiso:'P',enfermedad:'E',capacitacion:'C'}[tipo]||'?';
+        rows += `<rect x="${cx+pad}" y="${cy+pad}" width="${dayW-pad*2}" height="${rowH-pad*2}"
+          rx="3" fill="${col.bg}" stroke="${col.border}" stroke-width="1">
+          <title>${VAC_TIPOS_LABEL[tipo]} · ${u.name} · ${key}</title></rect>`;
+        rows += `<text x="${cx+dayW/2}" y="${cy+rowH/2+4}" text-anchor="middle"
+          font-size="9" font-weight="700" fill="${col.text}">${code}</text>`;
+      }
+    }
+  });
+
+  // SVG final
+  wrap.innerHTML = `
+  <svg width="${totalW}" height="${totalH}" viewBox="0 0 ${totalW} ${totalH}"
+    style="display:block;min-width:${totalW}px;font-family:'DM Sans',system-ui,sans-serif">
+    <!-- fondo -->
+    <rect width="${totalW}" height="${totalH}" fill="white"/>
+    <!-- label header -->
+    <rect x="0" y="0" width="${labelW}" height="${headerH}" fill="#F4F3EF"/>
+    <text x="${labelW/2}" y="${headerH/2+4}" text-anchor="middle" font-size="10"
+      font-weight="600" fill="#9E9C96" letter-spacing="1">DÍA</text>
+    <!-- fin de semana / feriados background -->
+    ${gridLines}
+    <!-- headers de días -->
+    ${header}
+    <!-- filas de usuarios -->
+    ${rows}
+    <!-- borde exterior -->
+    <rect x="0" y="0" width="${totalW}" height="${totalH}" fill="none"
+      stroke="#E2E0D8" stroke-width="1" rx="0"/>
+    <!-- separador label/días vertical -->
+    <line x1="${labelW}" y1="0" x2="${labelW}" y2="${totalH}" stroke="#E2E0D8" stroke-width="1"/>
+    <!-- separador header/cuerpo horizontal -->
+    <line x1="0" y1="${headerH}" x2="${totalW}" y2="${headerH}" stroke="#E2E0D8" stroke-width="1"/>
   </svg>`;
 }
 
