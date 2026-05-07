@@ -482,6 +482,14 @@ tbody td{padding:9px 14px;vertical-align:middle}
       <div class="tb-title">Control de Ausencias</div>
       <div class="tb-sub">Haz clic en un día para marcar o desmarcar · datos en Google Sheets</div>
     </div>
+    <button class="btn bg2 bsm" onclick="testVacConnection()" title="Verificar conexión con Sheets">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Probar conexión
+    </button>
+    <button class="btn bg2 bsm" onclick="loadVac().then(()=>{renderVac();toast('Vacaciones sincronizadas','ok')})">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Sincronizar
+    </button>
     <div class="vac-topbar-sel">
       <button class="vac-nav-btn" onclick="vacPrevMonth()">
         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -919,19 +927,35 @@ const uC=name=>{const u=users.find(x=>x.name===name);return CM[u?.color]||CM.blu
 /* ═══════════════════════════════
    GOOGLE SHEETS API
 ═══════════════════════════════ */
-async function sheetsFetch(params,body=null){
-  if(!SCRIPT_URL)throw new Error('URL no configurada');
-  const url=SCRIPT_URL+(body?'':'?action='+params.action);
-  const opts=body
-    ?{method:'POST',body:JSON.stringify({action:params.action,...body})}
-    :{method:'GET'};
-  // Apps Script CORS workaround: use no-cors for GET, normal for POST
-  const res=await fetch(url,{...opts,redirect:'follow'});
-  const text=await res.text();
-  try{return JSON.parse(text);}catch{
-    // Apps Script sometimes returns HTML on first deploy — treat as empty
-    console.warn('Non-JSON response:',text.slice(0,200));
-    return {tasks:[]};
+async function sheetsFetch(params, body=null){
+  if(!SCRIPT_URL) throw new Error('URL no configurada');
+
+  // Siempre POST — Apps Script maneja CORS mejor en POST que GET
+  // Incluimos la acción en el body para evitar problemas de query string
+  const payload = { action: params.action, ...(body||{}) };
+
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    redirect: 'follow',
+    body: JSON.stringify(payload)
+  });
+
+  const text = await res.text();
+
+  // Intentar parsear JSON
+  try {
+    const data = JSON.parse(text);
+    // Si Apps Script devuelve un error explícito, lanzarlo
+    if(data && data.error) throw new Error(data.error);
+    return data;
+  } catch(parseErr) {
+    // Si el texto contiene HTML es un error de Apps Script (script no publicado, etc.)
+    if(text.includes('<html') || text.includes('<!DOCTYPE')) {
+      console.error('Apps Script devolvió HTML — verifica que el script esté publicado como Aplicación Web:', text.slice(0,300));
+      throw new Error('El script no está respondiendo correctamente. Verifica la implementación en Apps Script.');
+    }
+    console.error('Respuesta inesperada:', text.slice(0,300));
+    throw new Error('Respuesta inesperada del script: ' + text.slice(0,80));
   }
 }
 
@@ -2006,6 +2030,28 @@ function isFeriado(key){ return !!FERIADOS_CL[key]; }
 function isWeekend(y,m,d){ const dow=new Date(y,m,d).getDay(); return dow===0||dow===6; }
 
 // Carga vacaciones desde Sheets
+async function testVacConnection(){
+  toast('Probando conexión...','ok');
+  try{
+    // 1. Ping general
+    const ping = await sheetsFetch({action:'ping'});
+    console.log('ping:', ping);
+
+    // 2. Test readVac específicamente
+    const vac = await sheetsFetch({action:'readVac'});
+    console.log('readVac:', vac);
+
+    if(vac.vacaciones !== undefined){
+      toast('Conexión OK · readVac funciona · '+vac.vacaciones.length+' registros','ok');
+    } else {
+      toast('Conexión OK pero readVac no reconocido — actualiza el script','err');
+    }
+  }catch(e){
+    console.error('Test failed:', e);
+    toast('Error: '+e.message,'err');
+  }
+}
+
 async function loadVac(){
   try{
     const res = await sheetsFetch({action:'readVac'});
@@ -2015,7 +2061,10 @@ async function loadVac(){
       vacData[v.responsable][v.fecha]={tipo:v.tipo||'vacaciones',nota:v.nota||''};
     });
     vacLoaded = true;
+    console.log('Vacaciones cargadas:', Object.keys(vacData).length, 'responsables');
   }catch(e){
+    console.error('loadVac error:', e);
+    vacLoaded = true; // marcar igual para no reintentar en bucle
     toast('Error al cargar vacaciones: '+e.message,'err');
   }
 }
@@ -2024,12 +2073,15 @@ async function loadVac(){
 async function saveVacDay(responsable, fecha, tipo, nota, remove){
   try{
     if(remove){
-      await sheetsFetch({action:'deleteVac'},{responsable,fecha});
+      const res = await sheetsFetch({action:'deleteVac'}, {responsable, fecha});
+      console.log('deleteVac response:', res);
     } else {
-      await sheetsFetch({action:'setVac'},{responsable,fecha,tipo,nota:nota||''});
+      const res = await sheetsFetch({action:'setVac'}, {responsable, fecha, tipo, nota: nota||''});
+      console.log('setVac response:', res);
     }
-  }catch(e){
-    toast('Error al guardar: '+e.message,'err');
+  } catch(e){
+    console.error('saveVacDay error:', e);
+    toast('Error al guardar en Sheets: '+e.message,'err');
   }
 }
 
@@ -2249,7 +2301,7 @@ document.getElementById('fsel-resp').addEventListener('change',()=>{CF.resp='';r
   // Pega aquí tu Google Client ID después de registrar la app en
   // Google Cloud Console (APIs & Services → Credentials → OAuth 2.0)
   // Formato: "xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
-  const GOOGLE_CLIENT_ID_CONFIG = '';
+  const GOOGLE_CLIENT_ID_CONFIG = '945821204702-t0s8nf6u1m5j09u11iutanuebpica0s6.apps.googleusercontent.com';
   // ───────────────────────────────────────────────────────────────
 
   // Check cached user session
